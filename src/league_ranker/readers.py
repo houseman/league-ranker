@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-
 import typing as t
+
+from . import models as m
 
 if t.TYPE_CHECKING:
     from io import TextIOWrapper
@@ -18,15 +19,14 @@ class AbstractReader(ABC):
 
     @classmethod
     @abstractmethod
-    def load_from_stream(cls, stream: TextIOWrapper) -> AbstractReader:
-        """Load Reader data from a text wrapper stream."""
+    def load(cls, stream: TextIOWrapper) -> AbstractReader:
+        """Load Reader data from a buffered text stream."""
 
         pass
 
-    @classmethod
     @abstractmethod
-    def load_from_text(cls, text: str) -> AbstractReader:
-        """Load Reader data from a text object."""
+    def parse(self) -> None:
+        """Parse loaded reader data into a data model"""
 
         pass
 
@@ -45,20 +45,18 @@ class BaseReader(AbstractReader):
         return self._data
 
     @classmethod
-    def load_from_stream(cls, stream: TextIOWrapper) -> BaseReader:
+    def load(cls, stream: TextIOWrapper) -> BaseReader:
         data = stream.read()
 
         return cls(data=data)
 
-    @classmethod
-    def load_from_text(cls, text: str) -> BaseReader:
-        return cls(data=text)
+    def parse(self) -> None:
+        return None  # pragma: no cover
 
 
 class LeagueRankerReader(BaseReader):
-    """A reader for League Ranker format data
+    """A reader for "League Ranker" format data
     This data follows the record format
-
     ```
     <NAME><space><SCORE><comma>[<space>]<NAME><space><SCORE><delimiter>
     ```
@@ -67,4 +65,21 @@ class LeagueRankerReader(BaseReader):
         "Lions 3, Snakes 3\n"
     """
 
-    pass
+    def parse(self) -> None:
+        for record in self._data.split("\n"):
+            if not record:
+                continue
+
+            left, right = record.split(",")
+            result = m.ResultModel(
+                a=self._parse_score(left.strip()), b=self._parse_score(right.strip())
+            )
+            print(result)
+
+        return None
+
+    def _parse_score(self, part: str) -> m.ScoreModel:
+        parts = part.split(" ")
+
+        team = m.TeamModel(name=" ".join(parts[:-1]))
+        return m.ScoreModel(team=team, points=int(parts[-1]))

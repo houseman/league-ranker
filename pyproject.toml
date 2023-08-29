@@ -86,4 +86,9 @@ omit = ["tests/*"]
 fail_under = 100
 skip_empty = true
 show_missing = true
-exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "if t.TYPE_CHECKING:",
+  "pass",
+]

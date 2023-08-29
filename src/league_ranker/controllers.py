@@ -11,6 +11,7 @@ class RankController:
 
     def __init__(self, reader: BaseReader) -> None:
         self._reader = reader
+        self._reader.parse()
 
     def dump(self) -> None:
         """Dump the raw input data to output."""
