@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from io import TextIOWrapper
 
 import click
@@ -10,6 +11,7 @@ from .configs import LeagueRankerConfig
 from .controllers import RankController
 from .parsers import LeagueRankerParser
 from .readers import BufferedTextStreamReader
+from .utils import configure_logging
 
 
 @click.command()
@@ -25,8 +27,26 @@ from .readers import BufferedTextStreamReader
     default=False,
     help="Run in strict mode. Input values will not be normalised",
 )
-def cli(input: TextIOWrapper | None, strict: bool) -> None:
+@click.option(
+    "--log-level",
+    type=click.Choice(
+        [
+            logging.getLevelName(logging.DEBUG),
+            logging.getLevelName(logging.INFO),
+            logging.getLevelName(logging.WARNING),
+            logging.getLevelName(logging.ERROR),
+            logging.getLevelName(logging.CRITICAL),
+        ],
+        case_sensitive=True,
+    ),
+    help="Sets the logger level",
+    default=logging.getLevelName(logging.INFO),
+    show_default=True,
+)
+def cli(input: TextIOWrapper | None, strict: bool, log_level: str) -> None:
     """Calculate and print the ranking table for a league."""
+    configure_logging(log_level=log_level)
+
     if input:
         stream = input
     else:
