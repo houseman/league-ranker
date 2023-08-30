@@ -3,6 +3,8 @@ Parsers understand a defined input data format.
 
 They are able to convert input data to a model structure.
 """
+from __future__ import annotations
+
 import logging
 import re
 import typing as t
@@ -10,7 +12,10 @@ from abc import ABC, abstractmethod
 
 from . import errors as err
 from . import models as m
-from .readers import BaseReader
+
+if t.TYPE_CHECKING:
+    from .readers import BaseReader
+    from .stats import StatsCounter
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +24,7 @@ class AbstractParser(ABC):
     """Abstract Base Class defines minimum Reader functionality."""
 
     @abstractmethod
-    def __init__(self, reader: BaseReader, strict: bool) -> None:
+    def __init__(self, reader: BaseReader, stats: StatsCounter, strict: bool) -> None:
         """All Parsers will require a Reader."""
         pass
 
@@ -38,10 +43,13 @@ class AbstractParser(ABC):
 class BaseParser(AbstractParser):
     """Base Parser class."""
 
-    def __init__(self, reader: BaseReader, strict: bool = False) -> None:
+    def __init__(
+        self, reader: BaseReader, stats: StatsCounter, strict: bool = False
+    ) -> None:
         """The base constructor requires a Reader."""
         self._reader = reader
         self._strict = strict
+        self._stats = stats
 
     @property
     def reader(self) -> BaseReader:
@@ -73,11 +81,13 @@ class LeagueRankerParser(BaseParser):
         """Parse reader input data."""
         results = []
         for record in re.split(r"\r\n|\n|\r", self.reader.data):
+            self._stats.incr("read")
             try:
                 groups = self.match(record=record)
 
             except err.RecordParseError as e:
                 logger.warning(str(e))
+                self._stats.incr("error")
 
                 continue  # Skip to next record on error
 
@@ -92,6 +102,7 @@ class LeagueRankerParser(BaseParser):
                 ),
             )
             logger.debug(f"Created model: {result}")
+            self._stats.incr("parsed")
             results.append(result)
 
         return results

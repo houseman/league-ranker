@@ -7,6 +7,7 @@ from ranker import models as m
 from ranker.errors import RecordParseError
 from ranker.parsers import LeagueRankerParser
 from ranker.readers import BufferedTextStreamReader
+from ranker.stats import StatsCounter
 
 
 def test_parse__valid_and_invalid():
@@ -20,8 +21,9 @@ def test_parse__valid_and_invalid():
         "Fluff Mop 7,Kick Ball 8\r\n"
     )
 
+    stats = StatsCounter()
     reader = BufferedTextStreamReader(data=data)
-    parser = LeagueRankerParser(reader=reader, strict=False)
+    parser = LeagueRankerParser(reader=reader, stats=stats, strict=False)
 
     expected = [
         m.MatchResultModel(
@@ -53,6 +55,9 @@ def test_parse__valid_and_invalid():
     output = parser.parse()
 
     assert output == expected
+    assert stats["read"] == 5
+    assert stats["error"] == 2
+    assert stats["parsed"] == 3
 
 
 @pytest.mark.parametrize(
@@ -75,7 +80,7 @@ def test_match__success__strict_mode_disabled(mocker, record, expected):
     When: Strict parsing is disabled
     Then: Return a valid tuple of four string values.
     """
-    parser = LeagueRankerParser(reader=mocker.Mock())
+    parser = LeagueRankerParser(reader=mocker.Mock(), stats=mocker.Mock(), strict=False)
 
     output = parser.match(record=record)
 
@@ -95,7 +100,7 @@ def test_match__success__strict_mode_enabled(mocker, record, expected):
     When: Strict parsing is enabled
     Then: Return a valid tuple of four string values.
     """
-    parser = LeagueRankerParser(reader=mocker.Mock(), strict=True)
+    parser = LeagueRankerParser(reader=mocker.Mock(), stats=mocker.Mock(), strict=True)
 
     output = parser.match(record=record)
 
@@ -120,7 +125,9 @@ def test_match__raises_record_parse_error(mocker, record, match):
     Then: Raise a RecordParseError.
     """
     strict = secrets.choice([True, False])
-    parser = LeagueRankerParser(reader=mocker.Mock(), strict=strict)
+    parser = LeagueRankerParser(
+        reader=mocker.Mock(), stats=mocker.Mock(), strict=strict
+    )
 
     with pytest.raises(RecordParseError, match=match):
         parser.match(record=record)

@@ -32,11 +32,10 @@ class BaseController(AbstractController):
 
     def parse(self) -> None:
         """Invoke the parser."""
-        model = self._parser.parse()
-        print(model)
+        self._parser.parse()
 
 
-class RankController(BaseController):
+class LeagueRankController(BaseController):
     """Controller class contains logic for the League Ranker."""
 
     def dump(self) -> None:

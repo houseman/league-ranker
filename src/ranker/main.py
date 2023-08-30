@@ -8,9 +8,10 @@ from io import TextIOWrapper
 import click
 
 from .configs import LeagueRankerConfig
-from .controllers import RankController
+from .controllers import LeagueRankController
 from .parsers import LeagueRankerParser
 from .readers import BufferedTextStreamReader
+from .stats import StatsCounter
 from .utils import configure_logging
 
 
@@ -52,12 +53,21 @@ def cli(input: TextIOWrapper | None, strict: bool, log_level: str) -> None:
     else:
         stream = TextIOWrapper(click.get_text_stream("stdin").buffer, encoding="locale")
 
+    stats = StatsCounter()
     reader = BufferedTextStreamReader.load(stream=stream)
     config = LeagueRankerConfig(is_strict_mode=strict)
-    parser = LeagueRankerParser(reader=reader, strict=strict)
+    parser = LeagueRankerParser(reader=reader, stats=stats, strict=strict)
 
-    controller = RankController(parser=parser, config=config)
+    controller = LeagueRankController(parser=parser, config=config)
     controller.dump()
     controller.parse()
+
+    click.secho("Stats", bold=True)
+    click.secho("Records read: ", fg="green", nl=False)
+    click.secho(stats["read"], fg="blue")
+    click.secho("Records parsed: ", fg="green", nl=False)
+    click.secho(stats["parsed"], fg="blue")
+    click.secho("Records failed: ", fg="green", nl=False)
+    click.secho(stats["error"], fg="blue")
 
     return None
