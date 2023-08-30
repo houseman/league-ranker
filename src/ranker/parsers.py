@@ -60,14 +60,14 @@ class LeagueRankerParser(BaseParser):
     This data follows the record format
 
     ```
-    ^([^\d)]*) (\d+),([^\d)]*) (\d+)$
+    ^(\D*) (\d+),(\D*) (\d+)$
     ```
 
     For example:
-        "Lions 3, Snakes 3"
+        "The Lions 3, Snakes 3"
     """
 
-    _PATTERN: t.Final = r"^([^\d)]*) (\d+),([^\d)]*) (\d+)$"
+    _PATTERN: t.Final = r"^(\D*) (\d+),(\D*) (\d+)$"
 
     def parse(self) -> m.InputDataSet:
         """Parse reader input data."""
