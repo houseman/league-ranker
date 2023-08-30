@@ -19,7 +19,7 @@ class AbstractParser(ABC):
     """Abstract Base Class defines minimum Reader functionality."""
 
     @abstractmethod
-    def __init__(self, reader: BaseReader) -> None:
+    def __init__(self, reader: BaseReader, strict: bool) -> None:
         """All Parsers will require a Reader."""
         pass
 
@@ -38,9 +38,10 @@ class AbstractParser(ABC):
 class BaseParser(AbstractParser):
     """Base Parser class."""
 
-    def __init__(self, reader: BaseReader) -> None:
+    def __init__(self, reader: BaseReader, strict: bool = False) -> None:
         """The base constructor requires a Reader."""
         self._reader = reader
+        self._strict = strict
 
     @property
     def reader(self) -> BaseReader:
@@ -81,11 +82,11 @@ class LeagueRankerParser(BaseParser):
                 continue  # Skip to next record on error
 
             result = m.MatchResultModel(
-                a=m.ResultModel(
+                left=m.ResultModel(
                     team=m.TeamModel(name=str(groups[0]).strip()),
                     score=m.ScoreModel(points=int(groups[1])),
                 ),
-                b=m.ResultModel(
+                right=m.ResultModel(
                     team=m.TeamModel(name=str(groups[2]).strip()),
                     score=m.ScoreModel(points=int(groups[3])),
                 ),
@@ -95,25 +96,32 @@ class LeagueRankerParser(BaseParser):
 
         return results
 
-    @classmethod
-    def match(cls, record: str) -> tuple[str, ...]:
+    def match(self, record: str) -> tuple[str, ...]:
         """
         Parse the given record string and return a tuple containing match group values.
 
         If parsing fails, a RecordParseError exception is raised.
         """
-        record = re.sub(r"[^\w ,]+", " ", record)
-        record = re.sub(r"[\s\_]+", " ", record)
-        record = record.strip().title()
+        if not self._strict:
+            """If strict mode is *not* enabled, try to normalise the data record.
+            - Strip all characters that are not alphanumeric, space or comma
+            - Replace underscores with spaces
+            - Reduce consecutive spaces to a single space
+            - Strip leading or ending spaces or newlines
+            - Title-case words
+            """
+            record = re.sub(r"[^\w ,]+", " ", record)
+            record = re.sub(r"[\s\_]+", " ", record)
+            record = record.strip().title()
 
         if not record:
             raise err.RecordParseError(f"Unusable record: '{record}'")
 
-        match = re.match(cls._PATTERN, record)
+        match = re.match(self._PATTERN, record)
 
         if not match:
             raise err.RecordParseError(
-                f"Invalid record format: '{record}' does not match {cls._PATTERN}"
+                f"Invalid record format: '{record}' does not match {self._PATTERN}"
             )
 
         groups = match.groups()

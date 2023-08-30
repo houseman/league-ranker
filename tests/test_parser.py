@@ -2,6 +2,7 @@
 Unit test for the Parser
 """
 import pytest
+import secrets
 
 from ranker.parsers import LeagueRankerParser
 from ranker.readers import BufferedTextStreamReader
@@ -16,24 +17,30 @@ def test_parse__valid_and_invalid():
     )
 
     reader = BufferedTextStreamReader(data=data)
-    parser = LeagueRankerParser(reader=reader)
+    parser = LeagueRankerParser(reader=reader, strict=False)
 
     expected = [
         m.MatchResultModel(
-            a=m.ResultModel(team=m.TeamModel(name="Foo"), score=m.ScoreModel(points=1)),
-            b=m.ResultModel(team=m.TeamModel(name="Bar"), score=m.ScoreModel(points=2)),
+            left=m.ResultModel(
+                team=m.TeamModel(name="Foo"), score=m.ScoreModel(points=1)
+            ),
+            right=m.ResultModel(
+                team=m.TeamModel(name="Bar"), score=m.ScoreModel(points=2)
+            ),
         ),
         m.MatchResultModel(
-            a=m.ResultModel(team=m.TeamModel(name="Baz"), score=m.ScoreModel(points=3)),
-            b=m.ResultModel(
+            left=m.ResultModel(
+                team=m.TeamModel(name="Baz"), score=m.ScoreModel(points=3)
+            ),
+            right=m.ResultModel(
                 team=m.TeamModel(name="Bat Fox"), score=m.ScoreModel(points=4)
             ),
         ),
         m.MatchResultModel(
-            a=m.ResultModel(
+            left=m.ResultModel(
                 team=m.TeamModel(name="Fluff Mop"), score=m.ScoreModel(points=7)
             ),
-            b=m.ResultModel(
+            right=m.ResultModel(
                 team=m.TeamModel(name="Kick Ball"), score=m.ScoreModel(points=8)
             ),
         ),
@@ -58,13 +65,37 @@ def test_parse__valid_and_invalid():
         ("Foo$Baz_Bar%3,(Bar)[20]", ("Foo Baz Bar", "3", "Bar", "20")),
     ],
 )
-def test_match__success(record, expected):
+def test_match__success__strict_mode_disabled(mocker, record, expected):
     """
-    Given: A record string value
-    When: The record format is valid, or can be normalised successfully
+    Given: A valid record string value, or one that can be normalised successfully
+    When: Strict parsing is disabled
     Then: Return a valid tuple of four string values
     """
-    output = LeagueRankerParser.match(record=record)
+
+    parser = LeagueRankerParser(reader=mocker.Mock())
+
+    output = parser.match(record=record)
+
+    assert output == expected
+
+
+@pytest.mark.parametrize(
+    ["record", "expected"],
+    [
+        ("Foo 3, Bar 5", ("Foo", "3", "Bar", "5")),
+        ("Foo Red 7, Bar Baz 15", ("Foo Red", "7", "Bar Baz", "15")),
+    ],
+)
+def test_match__success__strict_mode_enabled(mocker, record, expected):
+    """
+    Given: A valid record string value
+    When: Strict parsing is enabled
+    Then: Return a valid tuple of four string values
+    """
+
+    parser = LeagueRankerParser(reader=mocker.Mock(), strict=True)
+
+    output = parser.match(record=record)
 
     assert output == expected
 
@@ -80,11 +111,14 @@ def test_match__success(record, expected):
         ("Foo 1, Bar 1, Foo 1, Bar 1", r"Invalid record format:"),
     ],
 )
-def test_match__raises_record_parse_error(record, match):
+def test_match__raises_record_parse_error(mocker, record, match):
     """
-    Given: A record string value
-    When: The record format is invalid, and can not be normalised successfully
+    Given: Am invalid data record
+    When: Strict parsing is either enabled or disabled
     Then: Raise a RecordParseError
     """
+    strict = secrets.choice([True, False])
+    parser = LeagueRankerParser(reader=mocker.Mock(), strict=strict)
+
     with pytest.raises(RecordParseError, match=match):
-        LeagueRankerParser.match(record=record)
+        parser.match(record=record)
