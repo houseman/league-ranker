@@ -16,7 +16,8 @@ repos:
     rev: v0.1.6
     hooks:
       - id: detect-missing-init
-        args: ["--create", "--track", "--python-folders", "tests,src"]
+        args:
+          ["--create", "--track", "--python-folders", "tests,src/league_ranker"]
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.10.1

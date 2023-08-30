@@ -1,6 +1,8 @@
-from dataclasses import dataclass
+"""Models are data containers."""
+# ruff: noqa: D101 Missing docstring in public class
 
 import typing as t
+from dataclasses import dataclass
 
 
 @dataclass
@@ -10,10 +12,15 @@ class TeamModel:
 
 @dataclass
 class ScoreModel:
-    team: TeamModel
     points: int
 
 
-class ResultModel(t.NamedTuple):
-    a: ScoreModel
-    b: ScoreModel
+@dataclass
+class ResultModel:
+    team: TeamModel
+    score: ScoreModel
+
+
+class MatchResultModel(t.NamedTuple):
+    a: ResultModel
+    b: ResultModel

@@ -37,7 +37,7 @@ dev = [
 ]
 
 [project.scripts]
-rank = "league_ranker:cli"
+rank = "league_ranker.main:cli"
 
 [build-system]
 requires = ["setuptools"]
@@ -51,8 +51,13 @@ namespaces = false
 [tool.ruff]
 src = ["src", "tests"]
 # Enable flake8-bugbear (`B`) rules.
-select = ["E", "F", "B"]
-ignore = []
+select = ["E", "F", "B", "W", "I", "N", "D"]
+ignore = [
+  "D104", # Missing docstring in public package
+  "D107", # Missing docstring in `__init__`
+  "D203", # 1 blank line required before class docstring
+  "D212", # Multi-line docstring summary should start at the first line
+]
 
 # Same as Black.
 line-length = 88
