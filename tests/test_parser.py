@@ -1,16 +1,20 @@
-"""
-Unit test for the Parser
-"""
-import pytest
+"""Unit test for the Parser."""
 import secrets
 
+import pytest
+
+from ranker import models as m
+from ranker.errors import RecordParseError
 from ranker.parsers import LeagueRankerParser
 from ranker.readers import BufferedTextStreamReader
-from ranker.errors import RecordParseError
-from ranker import models as m
 
 
 def test_parse__valid_and_invalid():
+    """
+    Given: A valid input data
+    When: Strict parsing is disabled
+    Then: Return a valid InputDataSet model.
+    """
     data = (
         "Foo 1,Bar 2\nBaz 3, Bat Fox 4\r\nRed Jam 5 Sky Pen 6\n"
         "Fluff Mop 7,Kick Ball 8\r\n"
@@ -69,9 +73,8 @@ def test_match__success__strict_mode_disabled(mocker, record, expected):
     """
     Given: A valid record string value, or one that can be normalised successfully
     When: Strict parsing is disabled
-    Then: Return a valid tuple of four string values
+    Then: Return a valid tuple of four string values.
     """
-
     parser = LeagueRankerParser(reader=mocker.Mock())
 
     output = parser.match(record=record)
@@ -90,9 +93,8 @@ def test_match__success__strict_mode_enabled(mocker, record, expected):
     """
     Given: A valid record string value
     When: Strict parsing is enabled
-    Then: Return a valid tuple of four string values
+    Then: Return a valid tuple of four string values.
     """
-
     parser = LeagueRankerParser(reader=mocker.Mock(), strict=True)
 
     output = parser.match(record=record)
@@ -115,7 +117,7 @@ def test_match__raises_record_parse_error(mocker, record, match):
     """
     Given: Am invalid data record
     When: Strict parsing is either enabled or disabled
-    Then: Raise a RecordParseError
+    Then: Raise a RecordParseError.
     """
     strict = secrets.choice([True, False])
     parser = LeagueRankerParser(reader=mocker.Mock(), strict=strict)

@@ -1,6 +1,4 @@
-"""
-Unit test for the cli interface
-"""
+"""Unit test for the cli interface."""
 
 from click.testing import CliRunner
 

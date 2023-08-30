@@ -50,7 +50,7 @@ class BaseParser(AbstractParser):
 
     def parse(self) -> m.InputDataSet:
         """The parsing method must be implemented in subclasses."""
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
 
 class LeagueRankerParser(BaseParser):
