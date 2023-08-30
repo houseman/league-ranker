@@ -5,10 +5,8 @@ from __future__ import annotations
 import typing as t
 from abc import ABC, abstractmethod
 
-from . import models as m
-
 if t.TYPE_CHECKING:
-    from io import TextIOWrapper
+    import io
 
 
 class AbstractReader(ABC):
@@ -22,13 +20,8 @@ class AbstractReader(ABC):
 
     @classmethod
     @abstractmethod
-    def load(cls, stream: TextIOWrapper) -> AbstractReader:
-        """Load Reader data from a buffered text stream."""
-        pass
-
-    @abstractmethod
-    def parse(self) -> None:
-        """Parse loaded reader data into a data model."""
+    def load(cls, stream: t.Any) -> AbstractReader:
+        """Load Reader data from a source."""
         pass
 
 
@@ -48,47 +41,17 @@ class BaseReader(AbstractReader):
         return self._data
 
     @classmethod
-    def load(cls, stream: TextIOWrapper) -> BaseReader:
+    def load(cls, stream: t.Any) -> BaseReader:
+        """Implement in subclasses."""
+        raise NotImplementedError
+
+
+class BufferedTextStreamReader(BaseReader):
+    """Buffered Text Stream reader."""
+
+    @classmethod
+    def load(cls, stream: io.TextIOWrapper) -> BaseReader:
         """Load data into Reader from a buffered text stream."""
         data = stream.read()
 
         return cls(data=data)
-
-    def parse(self) -> None:
-        """Parse input data."""
-        return None  # pragma: no cover
-
-
-class LeagueRankerReader(BaseReader):
-    r"""
-    A reader for "League Ranker" format data.
-
-    This data follows the record format
-
-    ```
-    <NAME><space><SCORE><comma>[<space>]<NAME><space><SCORE><delimiter>
-    ```
-
-    For example:
-        "Lions 3, Snakes 3\n"
-    """
-
-    def parse(self) -> None:
-        """Parse input data."""
-        for record in self._data.split("\n"):
-            if not record:
-                continue
-
-            left, right = record.split(",")
-            result = m.MatchResultModel(
-                a=self._parse_score(left.strip()), b=self._parse_score(right.strip())
-            )
-            print(result)
-
-        return None
-
-    def _parse_score(self, part: str) -> m.ResultModel:
-        parts = part.split(" ")
-
-        team = m.TeamModel(name=" ".join(parts[:-1]))
-        return m.ResultModel(team=team, score=m.ScoreModel(points=int(parts[-1])))

@@ -7,7 +7,8 @@ from io import TextIOWrapper
 import click
 
 from .controllers import RankController
-from .readers import LeagueRankerReader
+from .parsers import LeagueRankerParser
+from .readers import BufferedTextStreamReader
 
 
 @click.command()
@@ -23,9 +24,11 @@ def cli(input: TextIOWrapper | None) -> None:
     else:
         stream = TextIOWrapper(click.get_text_stream("stdin").buffer, encoding="locale")
 
-    reader = LeagueRankerReader.load(stream=stream)
+    reader = BufferedTextStreamReader.load(stream=stream)
+    parser = LeagueRankerParser(reader=reader)
 
-    controller = RankController(reader=reader)
+    controller = RankController(parser=parser)
     controller.dump()
+    controller.parse()
 
     return None

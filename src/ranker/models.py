@@ -24,3 +24,6 @@ class ResultModel:
 class MatchResultModel(t.NamedTuple):
     a: ResultModel
     b: ResultModel
+
+
+InputDataSet: t.TypeAlias = list[MatchResultModel]

@@ -5,16 +5,20 @@ from __future__ import annotations
 import typing as t
 
 if t.TYPE_CHECKING:
-    from .readers import BaseReader
+    from .parsers import BaseParser
 
 
 class RankController:
     """Controller class contains logic for the League Ranker."""
 
-    def __init__(self, reader: BaseReader) -> None:
-        self._reader = reader
-        self._reader.parse()
+    def __init__(self, parser: BaseParser) -> None:
+        self._parser = parser
+
+    def parse(self) -> None:
+        """Invoke the parser."""
+        model = self._parser.parse()
+        print(model)
 
     def dump(self) -> None:
         """Dump the raw input data to output."""
-        print(self._reader.data)
+        print(self._parser.reader.data)
