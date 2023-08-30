@@ -43,7 +43,7 @@ class BaseReader(AbstractReader):
     @classmethod
     def load(cls, stream: t.Any) -> BaseReader:
         """Implement in subclasses."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
 
 class BufferedTextStreamReader(BaseReader):
@@ -54,4 +54,4 @@ class BufferedTextStreamReader(BaseReader):
         """Load data into Reader from a buffered text stream."""
         data = stream.read()
 
-        return cls(data=data)
+        return cls(data=data.strip())
