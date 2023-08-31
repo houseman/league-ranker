@@ -9,6 +9,7 @@ import click
 
 from .configs import LeagueRankerConfig
 from .controllers import LeagueRankController
+from .requests import CreateLogTableRequest
 from .utils import configure_logging
 
 
@@ -26,6 +27,13 @@ from .utils import configure_logging
     help="Run in strict mode. Input values will not be normalised",
 )
 @click.option(
+    "--verbose",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Run verbosely; prints statistics at completion",
+)
+@click.option(
     "--log-level",
     type=click.Choice(
         [
@@ -41,32 +49,39 @@ from .utils import configure_logging
     default=logging.getLevelName(logging.INFO),
     show_default=True,
 )
-def cli(input: TextIOWrapper | None, strict: bool, log_level: str) -> None:
+def cli(
+    input: TextIOWrapper | None, strict: bool, verbose: bool, log_level: str
+) -> None:
     """Calculate and print the ranking table for a league."""
     configure_logging(log_level=log_level)
 
     if input:
-        stream = input
+        # From --input cli parameter
+        data = input.read()
     else:
-        stream = TextIOWrapper(click.get_text_stream("stdin").buffer, encoding="locale")
+        # From STDIN
+        data = TextIOWrapper(
+            click.get_text_stream("stdin").buffer, encoding="locale"
+        ).read()
 
+    request = CreateLogTableRequest(data=data)
     config = LeagueRankerConfig(is_strict_mode=strict)
 
     controller = LeagueRankController(config=config)
+    response = controller.create_log_table(request=request)
 
-    table = controller.read(stream=stream).parse().build().sort()
+    for result in response.results:
+        print(f"{result.team.name}: {result.score.points}")
 
-    for result in table.results:  # type: ignore
-        print(f"{result.team.name}: {result.score.points}")  # type: ignore
+    if verbose:
+        stats = controller.stats
 
-    stats = controller.stats
-
-    click.secho("Stats", bold=True)
-    click.secho("Records read: ", fg="green", nl=False)
-    click.secho(stats["read"], fg="blue")
-    click.secho("Records parsed: ", fg="green", nl=False)
-    click.secho(stats["parsed"], fg="blue")
-    click.secho("Records failed: ", fg="green", nl=False)
-    click.secho(stats["error"], fg="blue")
+        click.secho("Stats", bold=True)
+        click.secho("Records read: ", fg="green", nl=False)
+        click.secho(stats["read"], fg="blue")
+        click.secho("Records parsed: ", fg="green", nl=False)
+        click.secho(stats["parsed"], fg="blue")
+        click.secho("Records failed: ", fg="green", nl=False)
+        click.secho(stats["error"], fg="blue")
 
     return None

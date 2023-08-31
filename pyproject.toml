@@ -27,8 +27,11 @@ Repository = "https://github.com/houseman/league-ranker"
 [project.optional-dependencies]
 
 dev = [
-  # Use pre-commit for formatting, linting, type checking etc
+  # Developer tools for type-checking, formating, linting etc.
   "pre-commit",
+  "black",
+  "ruff",
+  "mypy",
 
   # Test dependencies
   "pytest",

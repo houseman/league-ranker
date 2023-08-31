@@ -10,14 +10,12 @@ import typing as t
 
 from .factories import LogTableFactory
 from .parsers import LeagueRankerParser
-from .requests import GetLogTableRequest
 from .stats import StatsCounter
 
 if t.TYPE_CHECKING:
-    import io
-
     from . import models as m
     from .configs import LeagueRankerConfig
+    from .requests import CreateLogTableRequest
 
 
 class LeagueRankController:
@@ -28,39 +26,36 @@ class LeagueRankController:
         self._factory = LogTableFactory()
         self._stats = StatsCounter()
 
-    def read(self, stream: io.TextIOWrapper) -> t.Self:
-        """Read data from an input stream."""
-        self._request = GetLogTableRequest()
-        self._request.load_from_stream(stream=stream)
+    def create_log_table(
+        self,
+        request: CreateLogTableRequest,
+    ) -> m.LogTableModel:
+        """Create an return a League Log Table."""
+        parsed_data = self.parse(data=request.data)
+        table = self.build(data=parsed_data)
+        response = self.sort(table=table)
 
-        return self
+        return response
 
-    def parse(self) -> t.Self:
+    def parse(self, data: str) -> m.InputMatchResultsModel:
         """Invoke the parser."""
-        self._parser = LeagueRankerParser(
-            request=self._request,
+        parser = LeagueRankerParser(
+            data=data,
             stats=self._stats,
             strict=self._config.is_strict_mode,
         )
-        self._input_model = self._parser.parse()
 
-        return self
+        return parser.parse()
 
-    def build(self) -> t.Self:
+    def build(self, data: m.InputMatchResultsModel) -> m.LogTableModel:
         """Invoke the factory build."""
-        self._table = self._factory.build(input=self._input_model)
+        return self._factory.build(input=data)
 
-        return self
-
-    def sort(self) -> m.LogTableModel:
+    def sort(self, table: m.LogTableModel) -> m.LogTableModel:
         """Sort and return results."""
-        self._table.sort()
+        table.sort()
 
-        return self._table
-
-    def dump(self) -> None:
-        """Dump the raw input data to output."""
-        print(self._parser.request.data)
+        return table
 
     @property
     def stats(self) -> StatsCounter:
