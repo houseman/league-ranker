@@ -8,8 +8,8 @@ if t.TYPE_CHECKING:
     import io
 
 
-class InputDataReader:
-    """Buffered Text Stream reader."""
+class GetLogTableRequest:
+    """Request for Log Table model."""
 
     @property
     def data(self) -> str:

@@ -13,7 +13,7 @@ from . import errors as err
 from . import models as m
 
 if t.TYPE_CHECKING:
-    from .readers import InputDataReader
+    from .requests import GetLogTableRequest
     from .stats import StatsCounter
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class LeagueRankerParser:
     r"""
-    A reader for "League Ranker" format data.
+    A request for "League Ranker" format data.
 
     This data follows the record format
 
@@ -37,24 +37,24 @@ class LeagueRankerParser:
 
     def __init__(
         self,
-        reader: InputDataReader,
+        request: GetLogTableRequest,
         stats: StatsCounter,
         strict: bool = False,
     ) -> None:
-        """The base constructor requires a Reader."""
-        self._reader = reader
+        """The constructor."""
+        self._request = request
         self._strict = strict
         self._stats = stats
 
     @property
-    def reader(self) -> InputDataReader:
+    def request(self) -> GetLogTableRequest:
         """Return the instance Reader property."""
-        return self._reader
+        return self._request
 
     def parse(self) -> m.InputMatchResultsModel:
-        """Parse reader input data."""
+        """Parse request input data."""
         results = []
-        for record in re.split(r"\r\n|\n|\r", self.reader.data):
+        for record in re.split(r"\r\n|\n|\r", self.request.data):
             self._stats.incr("read")
             try:
                 groups = self.match(record=record)

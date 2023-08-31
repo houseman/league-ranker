@@ -10,7 +10,7 @@ import typing as t
 
 from .factories import LogTableFactory
 from .parsers import LeagueRankerParser
-from .readers import InputDataReader
+from .requests import GetLogTableRequest
 from .stats import StatsCounter
 
 if t.TYPE_CHECKING:
@@ -30,15 +30,15 @@ class LeagueRankController:
 
     def read(self, stream: io.TextIOWrapper) -> t.Self:
         """Read data from an input stream."""
-        self._reader = InputDataReader()
-        self._reader.load_from_stream(stream=stream)
+        self._request = GetLogTableRequest()
+        self._request.load_from_stream(stream=stream)
 
         return self
 
     def parse(self) -> t.Self:
         """Invoke the parser."""
         self._parser = LeagueRankerParser(
-            reader=self._reader,
+            request=self._request,
             stats=self._stats,
             strict=self._config.is_strict_mode,
         )
@@ -60,7 +60,7 @@ class LeagueRankController:
 
     def dump(self) -> None:
         """Dump the raw input data to output."""
-        print(self._parser.reader.data)
+        print(self._parser.request.data)
 
     @property
     def stats(self) -> StatsCounter:
