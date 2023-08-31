@@ -25,6 +25,7 @@ class LeagueRankController:
         self._config = config
         self._factory = LogTableFactory()
         self._stats = StatsCounter()
+        self._parser = LeagueRankerParser(stats=self._stats)
 
     def create_log_table(
         self,
@@ -39,13 +40,7 @@ class LeagueRankController:
 
     def parse(self, data: str) -> m.InputMatchResultsModel:
         """Invoke the parser."""
-        parser = LeagueRankerParser(
-            data=data,
-            stats=self._stats,
-            strict=self._config.is_strict_mode,
-        )
-
-        return parser.parse()
+        return self._parser.parse(data=data, strict=self._config.is_strict_mode)
 
     def build(self, data: m.InputMatchResultsModel) -> m.LogTableModel:
         """Invoke the factory build."""

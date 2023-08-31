@@ -22,7 +22,7 @@ def test_parse__valid_and_invalid():
     )
 
     stats = StatsCounter()
-    parser = LeagueRankerParser(data=data, stats=stats, strict=False)
+    parser = LeagueRankerParser(stats=stats)
 
     expected = InputMatchResultsModel(
         results=[
@@ -53,7 +53,7 @@ def test_parse__valid_and_invalid():
         ]
     )
 
-    output = parser.parse()
+    output = parser.parse(data=data, strict=False)
 
     assert output == expected
     assert stats["read"] == 5
@@ -81,9 +81,7 @@ def test_match__success__strict_mode_disabled(mocker, record, expected):
     When: Strict parsing is disabled
     Then: Return a valid tuple of four string values.
     """
-    parser = LeagueRankerParser(data=mocker.Mock(), stats=mocker.Mock(), strict=False)
-
-    output = parser.match(record=record)
+    output = LeagueRankerParser.match(record=record, strict=False)
 
     assert output == expected
 
@@ -101,9 +99,7 @@ def test_match__success__strict_mode_enabled(mocker, record, expected):
     When: Strict parsing is enabled
     Then: Return a valid tuple of four string values.
     """
-    parser = LeagueRankerParser(data=mocker.Mock(), stats=mocker.Mock(), strict=True)
-
-    output = parser.match(record=record)
+    output = LeagueRankerParser.match(record=record, strict=True)
 
     assert output == expected
 
@@ -126,7 +122,6 @@ def test_match__raises_record_parse_error(mocker, record, match):
     Then: Raise a RecordParseError.
     """
     strict = secrets.choice([True, False])
-    parser = LeagueRankerParser(data=mocker.Mock(), stats=mocker.Mock(), strict=strict)
 
     with pytest.raises(RecordParseError, match=match):
-        parser.match(record=record)
+        LeagueRankerParser.match(record=record, strict=strict)
