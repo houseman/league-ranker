@@ -39,3 +39,7 @@ class InputMatchResultsModel(BaseModel):
 @dataclass
 class LogTableModel(BaseModel):
     results: list[ResultModel]
+
+    def sort(self) -> None:
+        """Sort results by points descending, name ascending."""
+        self.results.sort(key=lambda r: (r.score.points, r.team.name), reverse=True)

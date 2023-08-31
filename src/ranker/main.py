@@ -63,7 +63,12 @@ def cli(input: TextIOWrapper | None, strict: bool, log_level: str) -> None:
     controller = LeagueRankController(parser=parser, config=config, factory=factory)
     controller.dump()
     source = controller.parse()
-    controller.build(source=source)
+    table = controller.build(source=source)
+    for result in table.results:  # type: ignore
+        print(f"{result.team.name}: {result.score.points}")  # type: ignore
+    table.sort()  # type: ignore
+    for result in table.results:  # type: ignore
+        print(f"{result.team.name}: {result.score.points}")  # type: ignore
 
     click.secho("Stats", bold=True)
     click.secho("Records read: ", fg="green", nl=False)
