@@ -5,39 +5,34 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BaseModel:
-    pass
-
-
-@dataclass
-class TeamModel(BaseModel):
+class TeamModel:
     name: str
 
 
 @dataclass
-class ScoreModel(BaseModel):
+class ScoreModel:
     points: int
 
 
 @dataclass
-class ResultModel(BaseModel):
+class ResultModel:
     team: TeamModel
     score: ScoreModel
 
 
 @dataclass
-class MatchResultModel(BaseModel):
+class MatchResultModel:
     left: ResultModel
     right: ResultModel
 
 
 @dataclass
-class InputMatchResultsModel(BaseModel):
+class InputMatchResultsModel:
     results: list[MatchResultModel]
 
 
 @dataclass
-class LogTableModel(BaseModel):
+class LogTableModel:
     results: list[ResultModel]
 
     def sort(self) -> None:

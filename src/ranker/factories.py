@@ -1,34 +1,16 @@
 """Factories take in something and produce something else."""
 
 import logging
-from abc import ABC, abstractmethod
 
 from . import models as m
 
 logger = logging.getLogger(__name__)
 
 
-class AbstractFactory(ABC):
-    """An abstract class that describes the minimum required Factory functionality."""
-
-    @abstractmethod
-    def build(self, input: m.BaseModel) -> m.BaseModel:
-        """A Factory must build something."""
-        pass
-
-
-class BaseFactory(AbstractFactory):
-    """Base factory implementation."""
-
-    def build(self, input: m.BaseModel) -> m.BaseModel:
-        """Implement this method in all subclasses."""
-        raise NotImplementedError()
-
-
-class LogTableFactory(BaseFactory):
+class LogTableFactory:
     """Factory produces a log table from match result data."""
 
-    def build(self, input: m.InputMatchResultsModel) -> m.LogTableModel:  # type: ignore
+    def build(self, input: m.InputMatchResultsModel) -> m.LogTableModel:
         """Build a log table."""
         table: dict[str, int] = {}
 

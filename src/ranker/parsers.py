@@ -8,60 +8,18 @@ from __future__ import annotations
 import logging
 import re
 import typing as t
-from abc import ABC, abstractmethod
 
 from . import errors as err
 from . import models as m
 
 if t.TYPE_CHECKING:
-    from .readers import BaseReader
+    from .readers import BufferedTextStreamReader
     from .stats import StatsCounter
 
 logger = logging.getLogger(__name__)
 
 
-class AbstractParser(ABC):
-    """Abstract Base Class defines minimum Reader functionality."""
-
-    @abstractmethod
-    def __init__(self, reader: BaseReader, stats: StatsCounter, strict: bool) -> None:
-        """All Parsers will require a Reader."""
-        pass
-
-    @property
-    @abstractmethod
-    def reader(self) -> BaseReader:
-        """Return the instance Reader object."""
-        pass
-
-    @abstractmethod
-    def parse(self) -> m.InputMatchResultsModel:
-        """All Parsers must parse reader data into a model."""
-        pass
-
-
-class BaseParser(AbstractParser):
-    """Base Parser class."""
-
-    def __init__(
-        self, reader: BaseReader, stats: StatsCounter, strict: bool = False
-    ) -> None:
-        """The base constructor requires a Reader."""
-        self._reader = reader
-        self._strict = strict
-        self._stats = stats
-
-    @property
-    def reader(self) -> BaseReader:
-        """Return the instance Reader property."""
-        return self._reader
-
-    def parse(self) -> m.InputMatchResultsModel:
-        """The parsing method must be implemented in subclasses."""
-        raise NotImplementedError()
-
-
-class LeagueRankerParser(BaseParser):
+class LeagueRankerParser:
     r"""
     A reader for "League Ranker" format data.
 
@@ -76,6 +34,22 @@ class LeagueRankerParser(BaseParser):
     """
 
     _PATTERN: t.Final = r"^(\D*) (\d+),(\D*) (\d+)$"
+
+    def __init__(
+        self,
+        reader: BufferedTextStreamReader,
+        stats: StatsCounter,
+        strict: bool = False,
+    ) -> None:
+        """The base constructor requires a Reader."""
+        self._reader = reader
+        self._strict = strict
+        self._stats = stats
+
+    @property
+    def reader(self) -> BufferedTextStreamReader:
+        """Return the instance Reader property."""
+        return self._reader
 
     def parse(self) -> m.InputMatchResultsModel:
         """Parse reader input data."""
