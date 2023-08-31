@@ -46,7 +46,8 @@ class LeagueRankController:
         """Invoke the factory build."""
         return self._factory.build(input=data)
 
-    def sort(self, table: m.LogTableModel) -> m.LogTableModel:
+    @staticmethod
+    def sort(table: m.LogTableModel) -> m.LogTableModel:
         """Sort and return results."""
         table.sort()
 

@@ -3,7 +3,7 @@
 from click.testing import CliRunner
 
 
-def test_cli__valid_input_arg_given():
+def test_cli__valid_input_path_given():
     """
     Given: The cli is invoked with a `--input` argument
     When: The `--input` file path is valid
@@ -16,7 +16,7 @@ def test_cli__valid_input_arg_given():
     assert result.exit_code == 0
 
 
-def test_cli__invalid_input_arg_given():
+def test_cli__invalid_input_path_given():
     """
     Given: The cli is invoked with a `--input` argument
     When: The `--input` file path is invalid (the file does not exist)
@@ -41,3 +41,31 @@ def test_cli__valid_stdin_given():
     runner = CliRunner()
     result = runner.invoke(cli, input="Lions 1, FC Awesome 1\n")
     assert result.exit_code == 0
+
+
+def test_cli__verbose_flag_prints_stats():
+    """
+    Given: The cli is invoked with a valid `--input` argument
+    When: The `--verbose` flag is set
+    Then: The command should print a stats table.
+    """
+    from ranker.main import cli
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--input", "data/data.in", "--verbose"])
+    assert result.exit_code == 0
+    assert "Statistics:" in result.output
+
+
+def test_cli__strict_flag_prints_note():
+    """
+    Given: The cli is invoked with a valid `--input` argument
+    When: The `--strict` flag is set
+    Then: The command should print a note.
+    """
+    from ranker.main import cli
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--input", "data/data.in", "--strict"])
+    assert result.exit_code == 0
+    assert "Note: Strict parsing is enabled." in result.output

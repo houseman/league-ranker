@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 class LogTableFactory:
     """Factory produces a log table from match result data."""
 
-    def build(self, input: m.FixtureListModel) -> m.LogTableModel:
+    @staticmethod
+    def build(input: m.FixtureListModel) -> m.LogTableModel:
         """Build a log table."""
         table: dict[str, int] = {}
 

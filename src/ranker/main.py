@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import logging
+import os
 from io import TextIOWrapper
 
 import click
+from tabulate import tabulate
 
 from .configs import LeagueRankerConfig
 from .controllers import LeagueRankController
@@ -53,6 +55,13 @@ def cli(
     input: TextIOWrapper | None, strict: bool, verbose: bool, log_level: str
 ) -> None:
     """Calculate and print the ranking table for a league."""
+    if strict:
+        click.secho(
+            f"{os.linesep}Note: Strict parsing is enabled.{os.linesep}",
+            fg="red",
+            bold=True,
+        )
+
     configure_logging(log_level=log_level)
 
     if input:
@@ -70,18 +79,19 @@ def cli(
     controller = LeagueRankController(config=config)
     response = controller.create_log_table(request=request)
 
-    for ranking in response.rankings:
-        print(f"{ranking.team.name}: {ranking.value.value}")
+    for i, ranking in enumerate(response.rankings, 1):
+        name = ranking.team.name
+        value = ranking.value.value
+        print(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
     if verbose:
         stats = controller.stats
 
-        click.secho("Stats", bold=True)
-        click.secho("Records read: ", fg="green", nl=False)
-        click.secho(stats["read"], fg="blue")
-        click.secho("Records parsed: ", fg="green", nl=False)
-        click.secho(stats["parsed"], fg="blue")
-        click.secho("Records failed: ", fg="green", nl=False)
-        click.secho(stats["error"], fg="blue")
+        headers = ["Imported", "Processed", "Failed"]
+        rows = [[stats["read"], stats["parsed"], stats["error"]]]
+        table = tabulate(rows, headers, tablefmt="fancy_grid")
+
+        click.secho(f"{os.linesep*2}Statistics:", bold=True)
+        click.echo(table)
 
     return None

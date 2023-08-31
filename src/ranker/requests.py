@@ -7,3 +7,7 @@ class CreateLogTableRequest:
     """Request for Log Table model."""
 
     data: str
+
+    def __post_init__(self) -> None:
+        """Strip leading and ending spaces from data."""
+        self.data = self.data.strip()
