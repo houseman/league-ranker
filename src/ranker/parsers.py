@@ -13,7 +13,7 @@ from . import errors as err
 from . import models as m
 
 if t.TYPE_CHECKING:
-    from .readers import BufferedTextStreamReader
+    from .readers import InputDataReader
     from .stats import StatsCounter
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class LeagueRankerParser:
 
     def __init__(
         self,
-        reader: BufferedTextStreamReader,
+        reader: InputDataReader,
         stats: StatsCounter,
         strict: bool = False,
     ) -> None:
@@ -47,7 +47,7 @@ class LeagueRankerParser:
         self._stats = stats
 
     @property
-    def reader(self) -> BufferedTextStreamReader:
+    def reader(self) -> InputDataReader:
         """Return the instance Reader property."""
         return self._reader
 

@@ -7,7 +7,7 @@ from ranker import models as m
 from ranker.errors import RecordParseError
 from ranker.models import InputMatchResultsModel
 from ranker.parsers import LeagueRankerParser
-from ranker.readers import BufferedTextStreamReader
+from ranker.readers import InputDataReader
 from ranker.stats import StatsCounter
 
 
@@ -23,7 +23,8 @@ def test_parse__valid_and_invalid():
     )
 
     stats = StatsCounter()
-    reader = BufferedTextStreamReader(data=data)
+    reader = InputDataReader()
+    reader.load_from_text(text=data)
     parser = LeagueRankerParser(reader=reader, stats=stats, strict=False)
 
     expected = InputMatchResultsModel(

@@ -8,20 +8,18 @@ if t.TYPE_CHECKING:
     import io
 
 
-class BufferedTextStreamReader:
+class InputDataReader:
     """Buffered Text Stream reader."""
-
-    def __init__(self, data: str) -> None:
-        self._data = data
 
     @property
     def data(self) -> str:
         """Public accessor for class data."""
         return self._data
 
-    @classmethod
-    def load(cls, stream: io.TextIOWrapper) -> BufferedTextStreamReader:
+    def load_from_text(self, text: str) -> None:
         """Load data into Reader from a buffered text stream."""
-        data = stream.read()
+        self._data = text
 
-        return cls(data=data.strip())
+    def load_from_stream(self, stream: io.TextIOWrapper) -> None:
+        """Load data into Reader from a buffered text stream."""
+        self.load_from_text(stream.read())
