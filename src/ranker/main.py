@@ -9,6 +9,7 @@ import click
 
 from .configs import LeagueRankerConfig
 from .controllers import LeagueRankController
+from .factories import LogTableFactory
 from .parsers import LeagueRankerParser
 from .readers import BufferedTextStreamReader
 from .stats import StatsCounter
@@ -57,10 +58,12 @@ def cli(input: TextIOWrapper | None, strict: bool, log_level: str) -> None:
     reader = BufferedTextStreamReader.load(stream=stream)
     config = LeagueRankerConfig(is_strict_mode=strict)
     parser = LeagueRankerParser(reader=reader, stats=stats, strict=strict)
+    factory = LogTableFactory()
 
-    controller = LeagueRankController(parser=parser, config=config)
+    controller = LeagueRankController(parser=parser, config=config, factory=factory)
     controller.dump()
-    controller.parse()
+    source = controller.parse()
+    controller.build(source=source)
 
     click.secho("Stats", bold=True)
     click.secho("Records read: ", fg="green", nl=False)

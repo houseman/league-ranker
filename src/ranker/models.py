@@ -1,29 +1,41 @@
 """Models are data containers."""
 # ruff: noqa: D101 Missing docstring in public class
 
-import typing as t
 from dataclasses import dataclass
 
 
 @dataclass
-class TeamModel:
+class BaseModel:
+    pass
+
+
+@dataclass
+class TeamModel(BaseModel):
     name: str
 
 
 @dataclass
-class ScoreModel:
+class ScoreModel(BaseModel):
     points: int
 
 
 @dataclass
-class ResultModel:
+class ResultModel(BaseModel):
     team: TeamModel
     score: ScoreModel
 
 
-class MatchResultModel(t.NamedTuple):
+@dataclass
+class MatchResultModel(BaseModel):
     left: ResultModel
     right: ResultModel
 
 
-InputDataSet: t.TypeAlias = list[MatchResultModel]
+@dataclass
+class InputMatchResultsModel(BaseModel):
+    results: list[MatchResultModel]
+
+
+@dataclass
+class LogTableModel(BaseModel):
+    results: list[ResultModel]

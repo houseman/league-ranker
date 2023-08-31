@@ -5,6 +5,7 @@ import pytest
 
 from ranker import models as m
 from ranker.errors import RecordParseError
+from ranker.models import InputMatchResultsModel
 from ranker.parsers import LeagueRankerParser
 from ranker.readers import BufferedTextStreamReader
 from ranker.stats import StatsCounter
@@ -14,7 +15,7 @@ def test_parse__valid_and_invalid():
     """
     Given: A valid input data
     When: Strict parsing is disabled
-    Then: Return a valid InputDataSet model.
+    Then: Return a valid InputMatchResultsModel model.
     """
     data = (
         "Foo 1,Bar 2\nBaz 3, Bat Fox 4\r\nRed Jam 5 Sky Pen 6\n"
@@ -25,32 +26,34 @@ def test_parse__valid_and_invalid():
     reader = BufferedTextStreamReader(data=data)
     parser = LeagueRankerParser(reader=reader, stats=stats, strict=False)
 
-    expected = [
-        m.MatchResultModel(
-            left=m.ResultModel(
-                team=m.TeamModel(name="Foo"), score=m.ScoreModel(points=1)
+    expected = InputMatchResultsModel(
+        results=[
+            m.MatchResultModel(
+                left=m.ResultModel(
+                    team=m.TeamModel(name="Foo"), score=m.ScoreModel(points=1)
+                ),
+                right=m.ResultModel(
+                    team=m.TeamModel(name="Bar"), score=m.ScoreModel(points=2)
+                ),
             ),
-            right=m.ResultModel(
-                team=m.TeamModel(name="Bar"), score=m.ScoreModel(points=2)
+            m.MatchResultModel(
+                left=m.ResultModel(
+                    team=m.TeamModel(name="Baz"), score=m.ScoreModel(points=3)
+                ),
+                right=m.ResultModel(
+                    team=m.TeamModel(name="Bat Fox"), score=m.ScoreModel(points=4)
+                ),
             ),
-        ),
-        m.MatchResultModel(
-            left=m.ResultModel(
-                team=m.TeamModel(name="Baz"), score=m.ScoreModel(points=3)
+            m.MatchResultModel(
+                left=m.ResultModel(
+                    team=m.TeamModel(name="Fluff Mop"), score=m.ScoreModel(points=7)
+                ),
+                right=m.ResultModel(
+                    team=m.TeamModel(name="Kick Ball"), score=m.ScoreModel(points=8)
+                ),
             ),
-            right=m.ResultModel(
-                team=m.TeamModel(name="Bat Fox"), score=m.ScoreModel(points=4)
-            ),
-        ),
-        m.MatchResultModel(
-            left=m.ResultModel(
-                team=m.TeamModel(name="Fluff Mop"), score=m.ScoreModel(points=7)
-            ),
-            right=m.ResultModel(
-                team=m.TeamModel(name="Kick Ball"), score=m.ScoreModel(points=8)
-            ),
-        ),
-    ]
+        ]
+    )
 
     output = parser.parse()
 

@@ -35,7 +35,7 @@ class AbstractParser(ABC):
         pass
 
     @abstractmethod
-    def parse(self) -> m.InputDataSet:
+    def parse(self) -> m.InputMatchResultsModel:
         """All Parsers must parse reader data into a model."""
         pass
 
@@ -56,7 +56,7 @@ class BaseParser(AbstractParser):
         """Return the instance Reader property."""
         return self._reader
 
-    def parse(self) -> m.InputDataSet:
+    def parse(self) -> m.InputMatchResultsModel:
         """The parsing method must be implemented in subclasses."""
         raise NotImplementedError()
 
@@ -77,7 +77,7 @@ class LeagueRankerParser(BaseParser):
 
     _PATTERN: t.Final = r"^(\D*) (\d+),(\D*) (\d+)$"
 
-    def parse(self) -> m.InputDataSet:
+    def parse(self) -> m.InputMatchResultsModel:
         """Parse reader input data."""
         results = []
         for record in re.split(r"\r\n|\n|\r", self.reader.data):
@@ -105,7 +105,7 @@ class LeagueRankerParser(BaseParser):
             self._stats.incr("parsed")
             results.append(result)
 
-        return results
+        return m.InputMatchResultsModel(results=results)
 
     def match(self, record: str) -> tuple[str, ...]:
         """
