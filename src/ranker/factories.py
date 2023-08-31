@@ -11,7 +11,7 @@ class LogTableFactory:
     """Factory produces a log table from match result data."""
 
     @staticmethod
-    def build(input: m.FixtureListModel) -> m.LogTableModel:
+    def build(input: m.FixtureListModel) -> m.RankingTableModel:
         """Build a log table."""
         table: dict[str, int] = {}
 
@@ -49,10 +49,10 @@ class LogTableFactory:
         for k, v in table.items():
             logger.debug(f"{k}: {v}")
 
-        return m.LogTableModel(
+        return m.RankingTableModel(
             rankings=[
                 m.RankingModel(
-                    team=m.TeamModel(name=k), value=m.RankPointsModel(value=v)
+                    team=m.TeamModel(name=k), points=m.RankPointsModel(value=v)
                 )
                 for k, v in table.items()
             ]

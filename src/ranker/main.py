@@ -81,7 +81,7 @@ def cli(
 
     for i, ranking in enumerate(response.rankings, 1):
         name = ranking.team.name
-        value = ranking.value.value
+        value = ranking.points.value
         print(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
     if verbose:

@@ -57,23 +57,23 @@ def input():
 
 @pytest.fixture
 def expected():
-    """A valid `LogTableModel` instance."""
-    return m.LogTableModel(
+    """A valid `RankingTableModel` instance."""
+    return m.RankingTableModel(
         rankings=[
             m.RankingModel(
-                team=m.TeamModel(name="Lions"), value=m.RankPointsModel(value=5)
+                team=m.TeamModel(name="Lions"), points=m.RankPointsModel(value=5)
             ),
             m.RankingModel(
-                team=m.TeamModel(name="Snakes"), value=m.RankPointsModel(value=4)
+                team=m.TeamModel(name="Snakes"), points=m.RankPointsModel(value=4)
             ),
             m.RankingModel(
-                team=m.TeamModel(name="Tarantulas"), value=m.RankPointsModel(value=3)
+                team=m.TeamModel(name="Tarantulas"), points=m.RankPointsModel(value=3)
             ),
             m.RankingModel(
-                team=m.TeamModel(name="Fc Awesome"), value=m.RankPointsModel(value=1)
+                team=m.TeamModel(name="Fc Awesome"), points=m.RankPointsModel(value=1)
             ),
             m.RankingModel(
-                team=m.TeamModel(name="Grouches"), value=m.RankPointsModel(value=0)
+                team=m.TeamModel(name="Grouches"), points=m.RankPointsModel(value=0)
             ),
         ]
     )
