@@ -10,30 +10,32 @@ logger = logging.getLogger(__name__)
 class LogTableFactory:
     """Factory produces a log table from match result data."""
 
-    def build(self, input: m.InputMatchResultsModel) -> m.LogTableModel:
+    def build(self, input: m.FixtureListModel) -> m.LogTableModel:
         """Build a log table."""
         table: dict[str, int] = {}
 
-        for result in input.results:
-            left, right = result.left, result.right
+        for fixture in input.fixtures:
+            left, right = fixture.left, fixture.right
+
             left_points = 0
             right_points = 0
-            if left.score.points > right.score.points:
+
+            if left.score.value > right.score.value:
                 logger.debug(
                     f"{left.team.name} won {right.team.name}: "
-                    f"{left.score.points} - {right.score.points}"
+                    f"{left.score.value} - {right.score.value}"
                 )
                 left_points = 3  # A win is worth 3 points
-            elif right.score.points > left.score.points:
+            elif right.score.value > left.score.value:
                 logger.debug(
                     f"{right.team.name} won {left.team.name}: "
-                    f"{right.score.points} - {left.score.points}"
+                    f"{right.score.value} - {left.score.value}"
                 )
                 right_points = 3  # A win is worth 3 points
             else:
                 logger.debug(
                     f"{left.team.name} drew {right.team.name}: "
-                    f"{left.score.points} - {right.score.points}"
+                    f"{left.score.value} - {right.score.value}"
                 )
                 # a draw (tie) is worth 1 point each
                 left_points = 1
@@ -47,8 +49,10 @@ class LogTableFactory:
             logger.debug(f"{k}: {v}")
 
         return m.LogTableModel(
-            results=[
-                m.ResultModel(team=m.TeamModel(name=k), score=m.ScoreModel(points=v))
+            rankings=[
+                m.RankingModel(
+                    team=m.TeamModel(name=k), value=m.RankPointsModel(value=v)
+                )
                 for k, v in table.items()
             ]
         )

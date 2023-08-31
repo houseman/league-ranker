@@ -11,7 +11,7 @@ class TeamModel:
 
 @dataclass
 class ScoreModel:
-    points: int
+    value: int
 
 
 @dataclass
@@ -21,20 +21,31 @@ class ResultModel:
 
 
 @dataclass
-class MatchResultModel:
+class FixtureModel:
     left: ResultModel
     right: ResultModel
 
 
 @dataclass
-class InputMatchResultsModel:
-    results: list[MatchResultModel]
+class FixtureListModel:
+    fixtures: list[FixtureModel]
+
+
+@dataclass
+class RankPointsModel:
+    value: int
+
+
+@dataclass
+class RankingModel:
+    team: TeamModel
+    value: RankPointsModel
 
 
 @dataclass
 class LogTableModel:
-    results: list[ResultModel]
+    rankings: list[RankingModel]
 
     def sort(self) -> None:
-        """Sort results by points descending, name ascending."""
-        self.results.sort(key=lambda r: (-r.score.points, r.team.name))
+        """Sort rankings by value descending, name ascending."""
+        self.rankings.sort(key=lambda r: (-r.value.value, r.team.name))

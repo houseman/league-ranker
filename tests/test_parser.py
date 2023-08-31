@@ -5,7 +5,7 @@ import pytest
 
 from ranker import models as m
 from ranker.errors import RecordParseError
-from ranker.models import InputMatchResultsModel
+from ranker.models import FixtureListModel
 from ranker.parsers import LeagueRankerParser
 from ranker.stats import StatsCounter
 
@@ -14,7 +14,7 @@ def test_parse__valid_and_invalid():
     """
     Given: A valid input data
     When: Strict parsing is disabled
-    Then: Return a valid InputMatchResultsModel model.
+    Then: Return a valid FixtureListModel model.
     """
     data = (
         "Foo 1,Bar 2\nBaz 3, Bat Fox 4\r\nRed Jam 5 Sky Pen 6\n"
@@ -24,30 +24,30 @@ def test_parse__valid_and_invalid():
     stats = StatsCounter()
     parser = LeagueRankerParser(stats=stats)
 
-    expected = InputMatchResultsModel(
-        results=[
-            m.MatchResultModel(
+    expected = FixtureListModel(
+        fixtures=[
+            m.FixtureModel(
                 left=m.ResultModel(
-                    team=m.TeamModel(name="Foo"), score=m.ScoreModel(points=1)
+                    team=m.TeamModel(name="Foo"), score=m.ScoreModel(value=1)
                 ),
                 right=m.ResultModel(
-                    team=m.TeamModel(name="Bar"), score=m.ScoreModel(points=2)
+                    team=m.TeamModel(name="Bar"), score=m.ScoreModel(value=2)
                 ),
             ),
-            m.MatchResultModel(
+            m.FixtureModel(
                 left=m.ResultModel(
-                    team=m.TeamModel(name="Baz"), score=m.ScoreModel(points=3)
+                    team=m.TeamModel(name="Baz"), score=m.ScoreModel(value=3)
                 ),
                 right=m.ResultModel(
-                    team=m.TeamModel(name="Bat Fox"), score=m.ScoreModel(points=4)
+                    team=m.TeamModel(name="Bat Fox"), score=m.ScoreModel(value=4)
                 ),
             ),
-            m.MatchResultModel(
+            m.FixtureModel(
                 left=m.ResultModel(
-                    team=m.TeamModel(name="Fluff Mop"), score=m.ScoreModel(points=7)
+                    team=m.TeamModel(name="Fluff Mop"), score=m.ScoreModel(value=7)
                 ),
                 right=m.ResultModel(
-                    team=m.TeamModel(name="Kick Ball"), score=m.ScoreModel(points=8)
+                    team=m.TeamModel(name="Kick Ball"), score=m.ScoreModel(value=8)
                 ),
             ),
         ]

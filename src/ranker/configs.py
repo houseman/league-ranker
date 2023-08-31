@@ -1,16 +1,9 @@
-"""Configuration classes."""
+"""Configuration models for League Ranker."""
 from dataclasses import dataclass
 
 
 @dataclass
-class BaseConfig:
-    """Base configuration."""
+class LeagueRankerConfig:
+    """Configuration model for League Ranker."""
 
     is_strict_mode: bool
-
-
-@dataclass
-class LeagueRankerConfig(BaseConfig):
-    """Config implementation for League Ranker."""
-
-    pass

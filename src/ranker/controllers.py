@@ -38,11 +38,11 @@ class LeagueRankController:
 
         return response
 
-    def parse(self, data: str) -> m.InputMatchResultsModel:
+    def parse(self, data: str) -> m.FixtureListModel:
         """Invoke the parser."""
         return self._parser.parse(data=data, strict=self._config.is_strict_mode)
 
-    def build(self, data: m.InputMatchResultsModel) -> m.LogTableModel:
+    def build(self, data: m.FixtureListModel) -> m.LogTableModel:
         """Invoke the factory build."""
         return self._factory.build(input=data)
 

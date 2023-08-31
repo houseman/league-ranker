@@ -42,7 +42,7 @@ class LeagueRankerParser:
         self,
         data: str,
         strict: bool = False,
-    ) -> m.InputMatchResultsModel:
+    ) -> m.FixtureListModel:
         """Parse request input data."""
         results = []
         for record in re.split(r"\r\n|\n|\r", data):
@@ -56,21 +56,21 @@ class LeagueRankerParser:
 
                 continue  # Skip to next record on error
 
-            result = m.MatchResultModel(
+            result = m.FixtureModel(
                 left=m.ResultModel(
                     team=m.TeamModel(name=str(groups[0]).strip()),
-                    score=m.ScoreModel(points=int(groups[1])),
+                    score=m.ScoreModel(value=int(groups[1])),
                 ),
                 right=m.ResultModel(
                     team=m.TeamModel(name=str(groups[2]).strip()),
-                    score=m.ScoreModel(points=int(groups[3])),
+                    score=m.ScoreModel(value=int(groups[3])),
                 ),
             )
             logger.debug(f"Created model: {result}")
             self._stats.incr("parsed")
             results.append(result)
 
-        return m.InputMatchResultsModel(results=results)
+        return m.FixtureListModel(fixtures=results)
 
     @classmethod
     def match(cls, record: str, strict: bool = False) -> tuple[str, ...]:

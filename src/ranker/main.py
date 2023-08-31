@@ -70,8 +70,8 @@ def cli(
     controller = LeagueRankController(config=config)
     response = controller.create_log_table(request=request)
 
-    for result in response.results:
-        print(f"{result.team.name}: {result.score.points}")
+    for ranking in response.rankings:
+        print(f"{ranking.team.name}: {ranking.value.value}")
 
     if verbose:
         stats = controller.stats
