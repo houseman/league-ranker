@@ -3,7 +3,9 @@
 import logging
 
 from . import models as m
+from . import utils
 
+config = utils.get_config()
 logger = logging.getLogger(__name__)
 
 
@@ -26,21 +28,23 @@ class LogTableFactory:
                     f"{left.team.name} won {right.team.name}: "
                     f"{left.score.value} - {right.score.value}"
                 )
-                left_points = 3  # A win is worth 3 points
+                left_points = config.points_for_win
+                right_points = config.points_for_loss
             elif right.score.value > left.score.value:
                 logger.debug(
                     f"{right.team.name} won {left.team.name}: "
                     f"{right.score.value} - {left.score.value}"
                 )
-                right_points = 3  # A win is worth 3 points
+                left_points = config.points_for_loss
+                right_points = config.points_for_win
             else:
                 logger.debug(
                     f"{left.team.name} drew {right.team.name}: "
                     f"{left.score.value} - {right.score.value}"
                 )
                 # a draw (tie) is worth 1 point each
-                left_points = 1
-                right_points = 1
+                left_points = config.points_for_draw
+                right_points = config.points_for_draw
 
             # Add to table
             table[left.team.name] = table.get(left.team.name, 0) + left_points

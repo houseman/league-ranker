@@ -27,7 +27,21 @@ def test_cli__invalid_input_path_given():
     runner = CliRunner()
     result = runner.invoke(cli, ["--input", "data/foo.in"])
     assert result.exit_code == 2
-    assert "Error: Invalid value for '--input': 'data/foo.in':" in result.output
+    assert "Invalid value for '--input' / '-i':" in result.output
+
+
+def test_cli__invalid_input_log_level_given():
+    """
+    Given: The cli is invoked with a `--log-level` argument
+    When: The `--log-level` value is invalid
+    Then: The command should return an exit code of 2.
+    """
+    from ranker.main import cli
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--input", "data/data.in", "--log-level", "FOO"])
+    assert result.exit_code == 2
+    assert "Invalid value for '--log-level' / '-l':" in result.output
 
 
 def test_cli__valid_stdin_given():

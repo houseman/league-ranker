@@ -40,7 +40,7 @@ class LeagueRankController:
 
     def parse(self, data: str) -> m.FixtureListModel:
         """Invoke the parser."""
-        return self._parser.parse(data=data, strict=self._config.is_strict_mode)
+        return self._parser.parse(data=data, strict=self._config.is_strict_parse)
 
     def build(self, data: m.FixtureListModel) -> m.RankingTableModel:
         """Invoke the factory build."""

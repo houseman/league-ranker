@@ -18,18 +18,21 @@ from .utils import configure_logging
 @click.command()
 @click.option(
     "--input",
+    "-i",
     type=click.File(mode="r", encoding="locale"),
     help="Path to data input file to read from",
 )
 @click.option(
     "--strict",
+    "-s",
     is_flag=True,
     show_default=True,
     default=False,
-    help="Run in strict mode. Input values will not be normalised",
+    help="Enable strict parsing. Input values will not be normalised",
 )
 @click.option(
     "--verbose",
+    "-v",
     is_flag=True,
     show_default=True,
     default=False,
@@ -37,6 +40,7 @@ from .utils import configure_logging
 )
 @click.option(
     "--log-level",
+    "-l",
     type=click.Choice(
         [
             logging.getLevelName(logging.DEBUG),
@@ -74,7 +78,7 @@ def cli(
         ).read()
 
     request = CreateLogTableRequest(data=data)
-    config = LeagueRankerConfig(is_strict_mode=strict)
+    config = LeagueRankerConfig(is_strict_parse=strict)
 
     controller = LeagueRankController(config=config)
     response = controller.create_log_table(request=request)
