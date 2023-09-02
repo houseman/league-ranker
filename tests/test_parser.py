@@ -53,7 +53,7 @@ def test_parse__valid_and_invalid():
         ]
     )
 
-    output = parser.parse(data=data, strict=False)
+    output = parser.parse(data=data)
 
     assert output == expected
     assert stats["read"] == 5

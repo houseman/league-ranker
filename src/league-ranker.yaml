@@ -1,0 +1,5 @@
+config:
+  is_strict_parse: False
+  points_for_win: 3 # A win is worth 3 points
+  points_for_loss: 0 # A loss is worth 0 points
+  points_for_draw: 1 # A draw is worth 1 point

@@ -28,7 +28,7 @@ repos:
     rev: "v1.5.1"
     hooks:
       - id: mypy
-        additional_dependencies: [types-tabulate]
+        additional_dependencies: [types-tabulate, types-PyYAML]
 
   - repo: https://github.com/psf/black
     rev: 23.7.0

@@ -9,10 +9,11 @@ from io import TextIOWrapper
 import click
 from tabulate import tabulate
 
-from .configs import LeagueRankerConfig
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
-from .utils import configure_logging
+from .utils import configure_logging, get_config
+
+config = get_config()
 
 
 @click.command()
@@ -59,6 +60,8 @@ def cli(
     input: TextIOWrapper | None, strict: bool, verbose: bool, log_level: str
 ) -> None:
     """Calculate and print the ranking table for a league."""
+    configure_logging(log_level=log_level)
+
     if strict:
         click.secho(
             f"{os.linesep}Note: Strict parsing is enabled.{os.linesep}",
@@ -66,7 +69,8 @@ def cli(
             bold=True,
         )
 
-    configure_logging(log_level=log_level)
+    config.set("is_strict_parse", strict)
+    config.from_yaml_file("src/league-ranker.yaml")
 
     if input:
         # From --input cli parameter
@@ -78,9 +82,8 @@ def cli(
         ).read()
 
     request = CreateLogTableRequest(data=data)
-    config = LeagueRankerConfig(is_strict_parse=strict)
 
-    controller = LeagueRankController(config=config)
+    controller = LeagueRankController()
     response = controller.create_log_table(request=request)
 
     for i, ranking in enumerate(response.rankings, 1):

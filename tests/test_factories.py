@@ -85,6 +85,7 @@ def test_build(input, expected):
     When:
     Then:
     """
-    output = LogTableFactory.build(input)
+    factory = LogTableFactory()
+    output = factory.build(input)
 
     assert output == expected

@@ -19,7 +19,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 
-dependencies = ["click", "tabulate"]
+dependencies = ["click", "tabulate", "PyYAML"]
 
 [project.urls]
 Repository = "https://github.com/houseman/league-ranker"
@@ -35,6 +35,7 @@ dev = [
 
   # Mypy types
   "types-tabulate",
+  "types-PyYAML",
 
   # Test dependencies
   "pytest",

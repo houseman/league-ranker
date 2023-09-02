@@ -14,15 +14,13 @@ from .stats import StatsCounter
 
 if t.TYPE_CHECKING:
     from . import models as m
-    from .configs import LeagueRankerConfig
     from .requests import CreateLogTableRequest
 
 
 class LeagueRankController:
     """Controller class contains logic for the League Ranker."""
 
-    def __init__(self, config: LeagueRankerConfig) -> None:
-        self._config = config
+    def __init__(self) -> None:
         self._factory = LogTableFactory()
         self._stats = StatsCounter()
         self._parser = LeagueRankerParser(stats=self._stats)
@@ -40,7 +38,7 @@ class LeagueRankController:
 
     def parse(self, data: str) -> m.FixtureListModel:
         """Invoke the parser."""
-        return self._parser.parse(data=data, strict=self._config.is_strict_parse)
+        return self._parser.parse(data=data)
 
     def build(self, data: m.FixtureListModel) -> m.RankingTableModel:
         """Invoke the factory build."""

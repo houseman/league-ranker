@@ -1,5 +1,13 @@
 """Unit tests for the ranker.meta module."""
-from ranker.meta import SingletonMeta
+import pytest
+
+
+@pytest.fixture
+def singleton():
+    """Override default fixture for `singleton`"""
+    from ranker.meta import SingletonMeta
+
+    SingletonMeta._SingletonMeta__instances = {}
 
 
 def test_singleton__equal_ids():
@@ -8,6 +16,7 @@ def test_singleton__equal_ids():
     When: The class is created multiple times
     Then: All instances of that class should be the same instance
     """
+    from ranker.meta import SingletonMeta
 
     class Foo(metaclass=SingletonMeta):
         ...
@@ -21,6 +30,7 @@ def test_singleton__set_attr():
     When:
     Then:
     """
+    from ranker.meta import SingletonMeta
 
     class Foo(metaclass=SingletonMeta):
         bar: str

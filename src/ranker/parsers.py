@@ -11,10 +11,12 @@ import typing as t
 
 from . import errors as err
 from . import models as m
+from .utils import get_config
 
 if t.TYPE_CHECKING:
     from .stats import StatsCounter
 
+config = get_config()
 logger = logging.getLogger(__name__)
 
 
@@ -37,18 +39,15 @@ class LeagueRankerParser:
     def __init__(self, stats: StatsCounter) -> None:
         """The constructor."""
         self._stats = stats
+        self._is_strict_parse = config.get_bool("is_strict_parse", False)
 
-    def parse(
-        self,
-        data: str,
-        strict: bool = False,
-    ) -> m.FixtureListModel:
+    def parse(self, data: str) -> m.FixtureListModel:
         """Parse request input data."""
         results = []
         for record in re.split(r"\r\n|\n|\r", data):
             self._stats.incr("read")
             try:
-                groups = self.match(record=record)
+                groups = self.match(record=record, strict=self._is_strict_parse)
 
             except err.RecordParseError as e:
                 logger.warning(str(e))

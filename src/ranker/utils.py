@@ -4,8 +4,6 @@ import logging
 
 from . import configs
 
-_config = configs.LeagueRankerConfig()
-
 
 def configure_logging(log_level: str) -> None:
     """Configure the Python logger."""
@@ -20,5 +18,5 @@ def configure_logging(log_level: str) -> None:
 
 
 def get_config() -> configs.LeagueRankerConfig:
-    """Return a configuration instance."""
-    return _config
+    """Return a singleton configuration instance."""
+    return configs.LeagueRankerConfig()
