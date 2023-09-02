@@ -2,7 +2,8 @@
 
 import logging
 
-from . import configs
+from .configs import LeagueRankerConfig
+from .stats import StatsCounter
 
 
 def configure_logging() -> None:
@@ -19,6 +20,11 @@ def configure_logging() -> None:
     logger.debug(f"Logging is configured (level: {log_level})")
 
 
-def get_config() -> configs.LeagueRankerConfig:
+def get_config() -> LeagueRankerConfig:
     """Return a singleton configuration instance."""
-    return configs.LeagueRankerConfig()
+    return LeagueRankerConfig()
+
+
+def get_stats() -> StatsCounter:
+    """Return a singleton stats instance."""
+    return StatsCounter()

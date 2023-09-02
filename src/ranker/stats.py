@@ -1,7 +1,8 @@
 """A stats counter."""
+from .meta import SingletonMeta
 
 
-class StatsCounter:
+class StatsCounter(metaclass=SingletonMeta):
     """A simple stats counter."""
 
     def __init__(self) -> None:

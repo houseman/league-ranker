@@ -11,10 +11,10 @@ import typing as t
 
 from . import errors as err
 from . import models as m
-from .utils import get_config
+from .utils import get_config, get_stats
 
 if t.TYPE_CHECKING:
-    from .stats import StatsCounter
+    pass
 
 config = get_config()
 logger = logging.getLogger(__name__)
@@ -36,9 +36,9 @@ class LeagueRankerParser:
 
     _PATTERN: t.Final = r"^(\D*) (\d+),(\D*) (\d+)$"
 
-    def __init__(self, stats: StatsCounter) -> None:
+    def __init__(self) -> None:
         """The constructor."""
-        self._stats = stats
+        self._stats = get_stats()
         self._strict_parse = config.get_bool("strict_parse", False)
 
     def parse(self, data: str) -> m.FixtureListModel:

@@ -10,7 +10,6 @@ import typing as t
 
 from .factories import LogTableFactory
 from .parsers import LeagueRankerParser
-from .stats import StatsCounter
 
 if t.TYPE_CHECKING:
     from . import models as m
@@ -22,8 +21,7 @@ class LeagueRankController:
 
     def __init__(self) -> None:
         self._factory = LogTableFactory()
-        self._stats = StatsCounter()
-        self._parser = LeagueRankerParser(stats=self._stats)
+        self._parser = LeagueRankerParser()
 
     def create_log_table(
         self,
@@ -50,8 +48,3 @@ class LeagueRankController:
         table.sort()
 
         return table
-
-    @property
-    def stats(self) -> StatsCounter:
-        """Return controller stats."""
-        return self._stats

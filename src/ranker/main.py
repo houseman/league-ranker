@@ -11,7 +11,7 @@ from tabulate import tabulate
 
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
-from .utils import configure_logging, get_config
+from .utils import configure_logging, get_config, get_stats
 
 config = get_config()
 
@@ -104,7 +104,7 @@ def cli(
         print(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
     if config.get_bool("verbose", False):
-        stats = controller.stats
+        stats = get_stats()
 
         headers = ["Imported", "Processed", "Failed"]
         rows = [[stats["read"], stats["parsed"], stats["error"]]]

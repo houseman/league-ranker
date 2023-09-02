@@ -5,7 +5,6 @@ import pytest
 from ranker import models as m
 from ranker.errors import RecordParseError
 from ranker.models import FixtureListModel
-from ranker.stats import StatsCounter
 
 
 def test_parse__valid_and_invalid():
@@ -21,8 +20,7 @@ def test_parse__valid_and_invalid():
         "Fluff Mop 7,Kick Ball 8\r\n"
     )
 
-    stats = StatsCounter()
-    parser = LeagueRankerParser(stats=stats)
+    parser = LeagueRankerParser()
     parser._strict_parse = False
 
     expected = FixtureListModel(
@@ -57,9 +55,9 @@ def test_parse__valid_and_invalid():
     output = parser.parse(data=data)
 
     assert output == expected
-    assert stats["read"] == 5
-    assert stats["error"] == 2
-    assert stats["parsed"] == 3
+    assert parser._stats["read"] == 5
+    assert parser._stats["error"] == 2
+    assert parser._stats["parsed"] == 3
 
 
 @pytest.mark.parametrize(
@@ -84,7 +82,7 @@ def test_match__success__strict_mode_disabled(mocker, record, expected):
     """
     from ranker.parsers import LeagueRankerParser
 
-    parser = LeagueRankerParser(stats=mocker.Mock())
+    parser = LeagueRankerParser()
     parser._strict_parse = False
 
     output = parser.match(record=record)
@@ -107,7 +105,7 @@ def test_match__success__strict_mode_enabled(mocker, record, expected):
     """
     from ranker.parsers import LeagueRankerParser
 
-    parser = LeagueRankerParser(stats=mocker.Mock())
+    parser = LeagueRankerParser()
     parser._strict_parse = True
 
     output = parser.match(record=record)
@@ -134,7 +132,7 @@ def test_match__raises_record_parse_error(mocker, record, match):
     """
     from ranker.parsers import LeagueRankerParser
 
-    parser = LeagueRankerParser(stats=mocker.Mock())
+    parser = LeagueRankerParser()
     parser._strict_parse = False
 
     with pytest.raises(RecordParseError, match=match):
