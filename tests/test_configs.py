@@ -19,7 +19,7 @@ def config():
 def test_config__args_or_kwargs_in_constructor_raises_config_error():
     """
     Given: Create a new `LeagueRankerConfig` instance
-    When: Passing args or keyword args to teh constructor
+    When: Passing args or keyword args to the constructor
     Then: Raise a `ConfigurationError` exception
     """
     from ranker.configs import LeagueRankerConfig

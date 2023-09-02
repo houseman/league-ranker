@@ -4,7 +4,7 @@ Configuration container for League Ranker.
 Configuration may be set
 - Environment variables (which override)
 - Config file values
-- Or, setting through teh `set` method.
+- Or, setting through the `set` method.
 """
 
 import logging

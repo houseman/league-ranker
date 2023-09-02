@@ -1,7 +1,7 @@
 """
 Controller classes contain business and flow logic.
 
-The `LeagueRankController` class follows teh builder pattern
+The `LeagueRankController` class follows the builder pattern
 """
 
 from __future__ import annotations

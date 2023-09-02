@@ -8,9 +8,9 @@ def test_increment__valid_input__undefined_name():
     When: A valid integer is added to an undefined name
     Then: The named count is set to 1 or the given value.
     """
-    from ranker.stats import StatsCounter
+    from ranker.stats import LeagueRankerStats
 
-    stats = StatsCounter()
+    stats = LeagueRankerStats()
 
     stats.incr("foo")
     assert stats["foo"] == 1
@@ -25,9 +25,9 @@ def test_increment__valid_input__defined_name():
     When: A valid integer is added to defined name
     Then: The named count is incremented by the given value.
     """
-    from ranker.stats import StatsCounter
+    from ranker.stats import LeagueRankerStats
 
-    stats = StatsCounter()
+    stats = LeagueRankerStats()
 
     stats.incr("foo")
     assert stats["foo"] == 1
@@ -42,9 +42,9 @@ def test_increment__invalid_input():
     When: An invalid (non-integer) value is added
     Then: A ValueError is raised.
     """
-    from ranker.stats import StatsCounter
+    from ranker.stats import LeagueRankerStats
 
-    stats = StatsCounter()
+    stats = LeagueRankerStats()
     with pytest.raises(ValueError, match="Cannot add a non-integer: 'bar' given"):
         stats.incr("foo", "bar")
 
@@ -55,7 +55,7 @@ def test_increment__get_item():
     When: A non-defined name is accessed
     Then: A value of 0 is returned.
     """
-    from ranker.stats import StatsCounter
+    from ranker.stats import LeagueRankerStats
 
-    stats = StatsCounter()
+    stats = LeagueRankerStats()
     assert stats["red"] == 0

@@ -2,11 +2,11 @@
 from .meta import SingletonMeta
 
 
-class StatsCounter(metaclass=SingletonMeta):
+class BaseStatsCounter(metaclass=SingletonMeta):
     """A simple stats counter."""
 
     def __init__(self) -> None:
-        """Initialise teh counter."""
+        """Initialise the counter."""
         self._stats: dict[str, int] = {}
 
     def incr(self, name: str, val: int = 1) -> None:
@@ -23,3 +23,9 @@ class StatsCounter(metaclass=SingletonMeta):
     def __getitem__(self, name: str) -> int:
         """Retrieve a name's value using a dict-like interface."""
         return self._stats.get(name, 0)
+
+
+class LeagueRankerStats(BaseStatsCounter):
+    """League Ranker stats counter."""
+
+    pass
