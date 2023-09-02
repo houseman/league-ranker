@@ -64,11 +64,12 @@ def cli(
 ) -> None:
     """Calculate and print the ranking table for a league."""
     print(f"CONFIG: {config._data}")
-    configure_logging(log_level=log_level)
-
     # Let cli argus override env, file values by setting mutate=True
     config.set("strict_parse", strict, mutate=True)
     config.set("verbose", verbose, mutate=True)
+    config.set("log_level", log_level, mutate=True)
+
+    configure_logging()
 
     if config.get_bool("strict_parse", strict):
         click.secho(

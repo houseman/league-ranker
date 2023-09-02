@@ -5,8 +5,10 @@ import logging
 from . import configs
 
 
-def configure_logging(log_level: str) -> None:
+def configure_logging() -> None:
     """Configure the Python logger."""
+    config = get_config()
+    log_level = config.get_str("log_level", "INFO")
     level = logging.getLevelNamesMapping()[log_level]
     logging.basicConfig(
         level=level,

@@ -1,4 +1,5 @@
 config:
+  log_level: INFO
   strict_parse: false
   verbose: false
   points_win: 3 # A win is worth 3 points
