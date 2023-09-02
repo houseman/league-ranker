@@ -83,3 +83,37 @@ def test_cli__strict_flag_prints_note():
     result = runner.invoke(cli, ["--input", "data/data.in", "--strict"])
     assert result.exit_code == 0
     assert "Note: Strict parsing is enabled." in result.output
+
+
+def test_cli__log_level_default():
+    """
+    Given: The cli is invoked with a valid `--input` argument
+    When: The `--log-level` flag is not set
+    Then: The configuration log_level should be "INFO"
+    """
+    from ranker.main import cli, config
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ["--input", "data/data.in"],
+    )
+    assert result.exit_code == 0
+    assert config.get_str("log_level") == "INFO"
+
+
+def test_cli__log_level_is_set():
+    """
+    Given: The cli is invoked with a valid `--input` argument
+    When: The `--log-level` flag is set
+    Then: The configuration log_level should be the selected level
+    """
+    from ranker.main import cli, config
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ["--input", "data/data.in", "--log-level", "ERROR"],
+    )
+    assert result.exit_code == 0
+    assert config.get_str("log_level") == "ERROR"

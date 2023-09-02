@@ -29,17 +29,18 @@ config = get_config()
 @click.option(
     "--strict",
     "-s",
+    "strict_parse",
     is_flag=True,
-    show_default=True,
-    default=False,
+    show_default=False,
+    default=None,
     help="Enable strict parsing. Input values will not be normalised.",
 )
 @click.option(
     "--verbose",
     "-v",
     is_flag=True,
-    show_default=True,
-    default=False,
+    show_default=False,
+    default=None,
     help="Run verbosely (prints statistics at completion).",
 )
 @click.option(
@@ -56,22 +57,28 @@ config = get_config()
         case_sensitive=True,
     ),
     help="Sets the logger level",
-    default=logging.getLevelName(logging.INFO),
+    default=None,  # logging.getLevelName(logging.INFO),
     show_default=True,
 )
 def cli(
-    input: TextIOWrapper | None, strict: bool, verbose: bool, log_level: str
+    input: TextIOWrapper | None,
+    strict_parse: bool | None,
+    verbose: bool | None,
+    log_level: str | None,
 ) -> None:
     """Calculate and print the ranking table for a league."""
     print(f"CONFIG: {config._data}")
     # Let cli argus override env, file values by setting mutate=True
-    config.set("strict_parse", strict, mutate=True)
-    config.set("verbose", verbose, mutate=True)
-    config.set("log_level", log_level, mutate=True)
+    if strict_parse is not None:
+        config.set("strict_parse", strict_parse, mutate=True)
+    if verbose is not None:
+        config.set("verbose", verbose, mutate=True)
+    if log_level is not None:
+        config.set("log_level", log_level, mutate=True)
 
     configure_logging()
 
-    if config.get_bool("strict_parse", strict):
+    if config.get_bool("strict_parse", False):
         click.secho(
             f"{os.linesep}Note: Strict parsing is enabled.{os.linesep}",
             fg="red",
@@ -97,7 +104,7 @@ def cli(
         value = ranking.points.value
         print(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
-    if config.get_bool("verbose", verbose):
+    if config.get_bool("verbose", False):
         stats = controller.stats
 
         headers = ["Imported", "Processed", "Failed"]
