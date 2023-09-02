@@ -14,7 +14,7 @@ def configure_logging(log_level: str) -> None:
     )
 
     logger = logging.getLogger(__name__)
-    logger.debug("Logging is configured")
+    logger.debug(f"Logging is configured (level: {log_level})")
 
 
 def get_config() -> configs.LeagueRankerConfig:

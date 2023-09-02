@@ -20,7 +20,7 @@ def config():
     from ranker.configs import LeagueRankerConfig
 
     config = LeagueRankerConfig()
-    config.set("is_strict_parse", False)
-    config.set("points_for_win", 3)
-    config.set("points_for_loss", 0)
-    config.set("points_for_draw", 1)
+    config.set("strict_parse", False)
+    config.set("points_win", 3)
+    config.set("points_loss", 0)
+    config.set("points_draw", 1)

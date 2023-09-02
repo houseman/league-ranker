@@ -13,9 +13,9 @@ class LogTableFactory:
     """Factory produces a log table from match result data."""
 
     def __init__(self) -> None:
-        self.points_for_win = config.get_int("points_for_win") or 3
-        self.points_for_loss = config.get_int("points_for_loss") or 0
-        self.points_for_draw = config.get_int("points_for_draw") or 1
+        self.points_win = config.get_int("points_win") or 3
+        self.points_loss = config.get_int("points_loss") or 0
+        self.points_draw = config.get_int("points_draw") or 1
 
     def build(self, input: m.FixtureListModel) -> m.RankingTableModel:
         """Build a log table."""
@@ -32,23 +32,23 @@ class LogTableFactory:
                     f"{left.team.name} won {right.team.name}: "
                     f"{left.score.value} - {right.score.value}"
                 )
-                left_points = self.points_for_win
-                right_points = self.points_for_loss
+                left_points = self.points_win
+                right_points = self.points_loss
             elif right.score.value > left.score.value:
                 logger.debug(
                     f"{right.team.name} won {left.team.name}: "
                     f"{right.score.value} - {left.score.value}"
                 )
-                left_points = self.points_for_loss
-                right_points = self.points_for_win
+                left_points = self.points_loss
+                right_points = self.points_win
             else:
                 logger.debug(
                     f"{left.team.name} drew {right.team.name}: "
                     f"{left.score.value} - {right.score.value}"
                 )
                 # a draw (tie) is worth 1 point each
-                left_points = self.points_for_draw
-                right_points = self.points_for_draw
+                left_points = self.points_draw
+                right_points = self.points_draw
 
             # Add to table
             table[left.team.name] = table.get(left.team.name, 0) + left_points

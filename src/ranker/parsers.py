@@ -39,7 +39,7 @@ class LeagueRankerParser:
     def __init__(self, stats: StatsCounter) -> None:
         """The constructor."""
         self._stats = stats
-        self._is_strict_parse = config.get_bool("is_strict_parse", False)
+        self._strict_parse = config.get_bool("strict_parse", False)
 
     def parse(self, data: str) -> m.FixtureListModel:
         """Parse request input data."""
@@ -47,7 +47,7 @@ class LeagueRankerParser:
         for record in re.split(r"\r\n|\n|\r", data):
             self._stats.incr("read")
             try:
-                groups = self.match(record=record, strict=self._is_strict_parse)
+                groups = self.match(record=record, strict=self._strict_parse)
 
             except err.RecordParseError as e:
                 logger.warning(str(e))
@@ -65,7 +65,7 @@ class LeagueRankerParser:
                     score=m.ScoreModel(value=int(groups[3])),
                 ),
             )
-            logger.debug(f"Created model: {result}")
+
             self._stats.incr("parsed")
             results.append(result)
 

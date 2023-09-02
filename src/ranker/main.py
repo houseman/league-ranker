@@ -21,7 +21,10 @@ config = get_config()
     "--input",
     "-i",
     type=click.File(mode="r", encoding="locale"),
-    help="Path to data input file to read from",
+    help=(
+        "Path to data input file to read from. "
+        "If not specified, input will be read from stdin."
+    ),
 )
 @click.option(
     "--strict",
@@ -29,7 +32,7 @@ config = get_config()
     is_flag=True,
     show_default=True,
     default=False,
-    help="Enable strict parsing. Input values will not be normalised",
+    help="Enable strict parsing. Input values will not be normalised.",
 )
 @click.option(
     "--verbose",
@@ -37,7 +40,7 @@ config = get_config()
     is_flag=True,
     show_default=True,
     default=False,
-    help="Run verbosely; prints statistics at completion",
+    help="Run verbosely (prints statistics at completion).",
 )
 @click.option(
     "--log-level",
@@ -60,17 +63,19 @@ def cli(
     input: TextIOWrapper | None, strict: bool, verbose: bool, log_level: str
 ) -> None:
     """Calculate and print the ranking table for a league."""
+    print(f"CONFIG: {config._data}")
     configure_logging(log_level=log_level)
 
-    if strict:
+    # Let cli argus override env, file values by setting mutate=True
+    config.set("strict_parse", strict, mutate=True)
+    config.set("verbose", verbose, mutate=True)
+
+    if config.get_bool("strict_parse", strict):
         click.secho(
             f"{os.linesep}Note: Strict parsing is enabled.{os.linesep}",
             fg="red",
             bold=True,
         )
-
-    config.set("is_strict_parse", strict)
-    config.from_yaml_file("src/league-ranker.yaml")
 
     if input:
         # From --input cli parameter
@@ -91,7 +96,7 @@ def cli(
         value = ranking.points.value
         print(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
-    if verbose:
+    if config.get_bool("verbose", verbose):
         stats = controller.stats
 
         headers = ["Imported", "Processed", "Failed"]

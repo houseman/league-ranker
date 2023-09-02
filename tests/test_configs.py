@@ -1,4 +1,6 @@
 """Unit tests for the ranker.configs module."""
+import os
+
 import pytest
 
 from ranker.errors import ConfigurationError
@@ -190,3 +192,45 @@ def test_get_bool__key_value_is_not_set_default_given():
 
     assert config.get_bool("boo", True) is True
     assert config.get_bool("bot", False) is False
+
+
+@pytest.fixture
+def patched_environ(mocker):
+    """Patch environment variables."""
+    mocker.patch.dict(
+        os.environ,
+        {
+            "RANKER_STRICT_PARSER": "true",
+            "RANKER_points_win": "5",
+            "RANKER_SUCCESS_MESSAGE": "Done",
+        },
+    )
+
+
+def test_load_from_env(patched_environ):
+    """
+    Given: Correctly-prefixed environment variables are set
+    When: Requesting the key from `LeagueRankerConfig`
+    Then: The expected value is returned
+    """
+    from ranker.configs import LeagueRankerConfig
+
+    config = LeagueRankerConfig()
+
+    assert config.get_bool("strict_parser") is True
+    assert config.get_int("points_win", 5)
+    assert config.get_str("success_message", "Done")
+
+
+def test_load_from_env_immutable(patched_environ):
+    """
+    Given: Correctly-prefixed environment variables are set
+    When: Setting the key value
+    Then: The key value is immutable
+    """
+    from ranker.configs import LeagueRankerConfig
+
+    config = LeagueRankerConfig()
+    config.set("points_win", 15)
+
+    assert config.get_int("points_win", 5)
