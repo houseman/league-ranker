@@ -67,8 +67,7 @@ def cli(
     log_level: str | None,
 ) -> None:
     """Calculate and print the ranking table for a league."""
-    print(f"CONFIG: {config._data}")
-    # Let cli argus override env, file values by setting mutate=True
+    # If set, let cli args override env, file values by setting mutate=True
     if strict_parse is not None:
         config.set("strict_parse", strict_parse, mutate=True)
     if verbose is not None:

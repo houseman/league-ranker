@@ -1,12 +1,10 @@
 """Unit test for the Parser."""
-import secrets
 
 import pytest
 
 from ranker import models as m
 from ranker.errors import RecordParseError
 from ranker.models import FixtureListModel
-from ranker.parsers import LeagueRankerParser
 from ranker.stats import StatsCounter
 
 
@@ -16,6 +14,8 @@ def test_parse__valid_and_invalid():
     When: Strict parsing is disabled
     Then: Return a valid FixtureListModel model.
     """
+    from ranker.parsers import LeagueRankerParser
+
     data = (
         "Foo 1,Bar 2\nBaz 3, Bat Fox 4\r\nRed Jam 5 Sky Pen 6\n"
         "Fluff Mop 7,Kick Ball 8\r\n"
@@ -23,6 +23,7 @@ def test_parse__valid_and_invalid():
 
     stats = StatsCounter()
     parser = LeagueRankerParser(stats=stats)
+    parser._strict_parse = False
 
     expected = FixtureListModel(
         fixtures=[
@@ -81,7 +82,12 @@ def test_match__success__strict_mode_disabled(mocker, record, expected):
     When: Strict parsing is disabled
     Then: Return a valid tuple of four string values.
     """
-    output = LeagueRankerParser.match(record=record, strict=False)
+    from ranker.parsers import LeagueRankerParser
+
+    parser = LeagueRankerParser(stats=mocker.Mock())
+    parser._strict_parse = False
+
+    output = parser.match(record=record)
 
     assert output == expected
 
@@ -99,7 +105,12 @@ def test_match__success__strict_mode_enabled(mocker, record, expected):
     When: Strict parsing is enabled
     Then: Return a valid tuple of four string values.
     """
-    output = LeagueRankerParser.match(record=record, strict=True)
+    from ranker.parsers import LeagueRankerParser
+
+    parser = LeagueRankerParser(stats=mocker.Mock())
+    parser._strict_parse = True
+
+    output = parser.match(record=record)
 
     assert output == expected
 
@@ -118,10 +129,13 @@ def test_match__success__strict_mode_enabled(mocker, record, expected):
 def test_match__raises_record_parse_error(mocker, record, match):
     """
     Given: Am invalid data record
-    When: Strict parsing is either enabled or disabled
+    When: Strict parsing is disabled
     Then: Raise a RecordParseError.
     """
-    strict = secrets.choice([True, False])
+    from ranker.parsers import LeagueRankerParser
+
+    parser = LeagueRankerParser(stats=mocker.Mock())
+    parser._strict_parse = False
 
     with pytest.raises(RecordParseError, match=match):
-        LeagueRankerParser.match(record=record, strict=strict)
+        parser.match(record=record)

@@ -44,10 +44,10 @@ class LeagueRankerParser:
     def parse(self, data: str) -> m.FixtureListModel:
         """Parse request input data."""
         results = []
-        for record in re.split(r"\r\n|\n|\r", data):
+        for line, record in enumerate(re.split(r"\r\n|\n|\r", data)):
             self._stats.incr("read")
             try:
-                groups = self.match(record=record, strict=self._strict_parse)
+                groups = self.match(record=record, line=line + 1)
 
             except err.RecordParseError as e:
                 logger.warning(str(e))
@@ -71,14 +71,13 @@ class LeagueRankerParser:
 
         return m.FixtureListModel(fixtures=results)
 
-    @classmethod
-    def match(cls, record: str, strict: bool = False) -> tuple[str, ...]:
+    def match(self, record: str, line: int = 0) -> tuple[str, ...]:
         """
         Parse the given record string and return a tuple containing match group values.
 
         If parsing fails, a RecordParseError exception is raised.
         """
-        if not strict:
+        if not self._strict_parse:
             """If strict mode is *not* enabled, try to normalise the data record.
             - Strip all characters that are not alphanumeric, space or comma
             - Replace underscores with spaces
@@ -91,13 +90,13 @@ class LeagueRankerParser:
             record = record.strip().title()
 
         if not record:
-            raise err.RecordParseError(f"Unusable record: '{record}'")
+            raise err.RecordParseError(f"Unusable record: '{record}' at line {line}")
 
-        match = re.match(cls._PATTERN, record)
+        match = re.match(self._PATTERN, record)
 
         if not match:
             raise err.RecordParseError(
-                f"Invalid record format: '{record}' does not match {cls._PATTERN}"
+                f"Invalid record format: '{record}' at line {line}"
             )
 
         groups = match.groups()
