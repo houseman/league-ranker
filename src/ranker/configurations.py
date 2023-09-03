@@ -6,6 +6,8 @@ Configuration container for League Ranker.
 > 1. Command line options (supersede)
 > 2. Environment variables (supersede)
 > 3. Configuration file
+
+Configuration values are stored in the environment.
 """
 from __future__ import annotations
 
@@ -41,11 +43,7 @@ class LeagueRankerConfiguration:
     _truthey = [1, "1", True, "True", "true"]  # Values that should evaluate to `True`
 
     def __init__(self) -> None:
-        self._data: KeyValuePairs = {}
-
-        self._load_from_env()
         self._load_from_file(self._find_config_path())
-        logger.info(f"Config {self._data} at init")
 
     @classmethod
     def create(cls, init: KeyValuePairs | None = None) -> LeagueRankerConfiguration:
@@ -63,7 +61,7 @@ class LeagueRankerConfiguration:
 
     def has_key(self, key: str) -> bool:
         """Return `True` if the given key has a set value, else `False`."""
-        return key in self._data
+        return self.env_key(key) in os.environ
 
     def get_str(self, key: str, default: str | None = None) -> str:
         """
@@ -73,7 +71,7 @@ class LeagueRankerConfiguration:
         If no default value is provided, a `ConfigurationError` exception will raise.
         """
         try:
-            return str(self._data[key])
+            return str(os.environ[self.env_key(key)])
         except KeyError:
             if default is not None:
                 return default
@@ -87,7 +85,7 @@ class LeagueRankerConfiguration:
         If no default value is provided, a `ConfigurationError` exception will raise.
         """
         try:
-            return int(self._data[key])
+            return int(os.environ[self.env_key(key)])
         except KeyError:
             if default is not None:
                 return default
@@ -105,7 +103,7 @@ class LeagueRankerConfiguration:
         If no default value is provided, a `ConfigurationError` exception will raise.
         """
         try:
-            return self._data[key] in self._truthey
+            return os.environ[self.env_key(key)] in self._truthey
         except KeyError:
             if default is not None:
                 return default
@@ -128,28 +126,17 @@ class LeagueRankerConfiguration:
 
         return prefix + key.upper()
 
-    def _load_from_env(self) -> None:
-        """Load values from environment that match `sel._prefix."""
-        prefix = self._prefix.upper() + "_"
-
-        logger.info(f"Read config from environment (prefix is '{prefix}')")
-
-        self._merge(
-            {
-                str(k).upper().replace(prefix, "").lower(): v
-                for k, v in os.environ.items()
-                if str(k).upper().startswith(prefix)
-            }
-        )
-
-    def _merge(self, pairs: KeyValuePairs, mutate: bool = False) -> None:
+    def _merge(self, pairs: KeyValuePairs) -> None:
         """Merge the given config key:value pairs into the internal config store."""
         for k, v in pairs.items():
-            if mutate or k not in self._data:
-                self._data[k] = v
-                logger.debug(f"Added config key {k}: {v}")
+            environ_key = self.env_key(k)
+            if environ_key not in os.environ:
+                os.environ[environ_key] = str(v)
+                logger.debug(f"Added config key {environ_key}: {v}")
             else:
-                logger.debug(f"Config key '{k}' exists ('{self._data[k]}')")
+                logger.debug(
+                    f"Key '{environ_key}' exists ('{os.environ[environ_key]}')"
+                )
 
     def _find_config_path(self) -> str:
         """Look for a config file path in pre-defined locations."""

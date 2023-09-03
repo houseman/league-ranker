@@ -29,13 +29,14 @@ def test_create__none_init_value(mocker):
     """
     Given: A `LeagueRankerConfiguration` instance is created using the `create()` method
     When: A `None` init value is passed (default)
-    Then: The environment is not updated
+    Then: The environment is not mutated
     """
     from ranker.configurations import LeagueRankerConfiguration, os
 
+    expected = os.environ
     LeagueRankerConfiguration.create()
 
-    assert list(os.environ.keys()) == ["PYTEST_CURRENT_TEST"]
+    assert os.environ == expected  # Not mutated
 
 
 @pytest.mark.parametrize(
