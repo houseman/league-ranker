@@ -2,6 +2,8 @@
 
 import pytest
 
+from ranker import models as m
+
 
 @pytest.fixture(autouse=True)
 def singleton(mocker):
@@ -37,6 +39,16 @@ Lions 4, Grouches 0"""
 
 
 @pytest.fixture
+def invalid_input_data():
+    """Valid input data fixture."""
+    return """Lions 3 Snakes 3
+Tarantulas 1 FC Awesome 0
+Lions 1 FC Awesome 1
+Tarantulas 3 Snakes 1
+Lions 4 Grouches 0"""
+
+
+@pytest.fixture
 def config_yaml():
     """Valid configuration YAML."""
     return """config:
@@ -48,3 +60,27 @@ def config_yaml():
   points_loss: 0 # A loss is worth 0 points
   points_draw: 1 # A draw is worth 1 point
 """
+
+
+@pytest.fixture
+def sorted_log_table():
+    """A sorted `RankingTableModel` instance."""
+    return m.RankingTableModel(
+        rankings=[
+            m.RankingModel(
+                team=m.TeamModel(name="Tarantulas"), points=m.RankPointsModel(value=6)
+            ),
+            m.RankingModel(
+                team=m.TeamModel(name="Lions"), points=m.RankPointsModel(value=5)
+            ),
+            m.RankingModel(
+                team=m.TeamModel(name="Fc Awesome"), points=m.RankPointsModel(value=1)
+            ),
+            m.RankingModel(
+                team=m.TeamModel(name="Snakes"), points=m.RankPointsModel(value=1)
+            ),
+            m.RankingModel(
+                team=m.TeamModel(name="Grouches"), points=m.RankPointsModel(value=0)
+            ),
+        ]
+    )
