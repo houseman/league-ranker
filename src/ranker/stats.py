@@ -2,7 +2,7 @@
 from .meta import SingletonMeta
 
 
-class BaseStatsCounter(metaclass=SingletonMeta):
+class LeagueRankerStats(metaclass=SingletonMeta):
     """A simple stats counter."""
 
     def __init__(self) -> None:
@@ -23,9 +23,3 @@ class BaseStatsCounter(metaclass=SingletonMeta):
     def __getitem__(self, name: str) -> int:
         """Retrieve a name's value using a dict-like interface."""
         return self._stats.get(name, 0)
-
-
-class LeagueRankerStats(BaseStatsCounter):
-    """League Ranker stats counter."""
-
-    pass
