@@ -59,7 +59,7 @@ from .utils import configure_logging, get_stats
     show_default=True,
 )
 def cli(
-    input: TextIOWrapper | None,
+    input: TextIOWrapper,
     config_path: str | None,
     strict_parse: bool | None,
     verbose: bool | None,
@@ -96,16 +96,7 @@ def cli(
             fg="blue",
         )
 
-    if input:
-        # From --input cli parameter
-        data = input.read()
-    else:
-        # From STDIN
-        data = TextIOWrapper(
-            click.get_text_stream("stdin").buffer, encoding="locale"
-        ).read()
-
-    request = CreateLogTableRequest(data=data)
+    request = CreateLogTableRequest(data=input.read())
 
     controller = LeagueRankController()
     response = controller.create_log_table(request=request)
