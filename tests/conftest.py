@@ -40,7 +40,7 @@ Lions 4, Grouches 0"""
 def config_yaml():
     """Valid configuration YAML."""
     return """config:
-  log_level: INFO
+  log_level: ERROR
   config_path: /var/foo/bar.yaml
   strict_parse: false
   verbose: false

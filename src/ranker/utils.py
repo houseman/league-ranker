@@ -1,4 +1,4 @@
-"""Module for useful utilities."""
+"""Module for miscellaneous utilities."""
 
 import logging
 

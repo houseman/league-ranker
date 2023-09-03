@@ -41,13 +41,17 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
 
         self._load_from_env()
         self._load_from_file(self._find_config_path())
-        logger.debug(f"Config {self._data} at init")
+        logger.info(f"Config {self._data} at init")
 
     @classmethod
     def create(cls, init: KeyValuePairs) -> BaseConfig:
-        """A static method to be used to create the first Singleton instance."""
+        """
+        A static method to be used to create the first Singleton instance.
+
+        A dictionary containing key:value pairs may be given as a parameter. These will
+        be injected into the environment before creating the instance.
+        """
         for k, v in init.items():
-            print(f"Set env [{cls.env_key(k)}] = {v}")
             os.environ[cls.env_key(k)] = str(v)
 
         return cls()
@@ -149,7 +153,7 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
                 self._data[k] = v
                 logger.debug(f"Added config key {k}: {v}")
             else:
-                logger.warning(f"Config key '{k}' exists ('{self._data[k]}')")
+                logger.debug(f"Config key '{k}' exists ('{self._data[k]}')")
 
     def _find_config_path(self) -> str:
         """Look for a config file path in pre-defined locations."""

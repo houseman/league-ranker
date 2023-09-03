@@ -105,14 +105,14 @@ def test_cli__log_level_default(cli_runner):
     """
     Given: The cli is invoked with a valid file path argument
     When: The `--log-level` flag is not set
-    Then: The configuration log_level should be "INFO"
+    Then: The configuration log_level should be "ERROR"
     """
     from ranker.configs import LeagueRankerConfig
     from ranker.main import cli
 
     result = cli_runner.invoke(cli, ["foo.in"])
     assert result.exit_code == 0
-    assert LeagueRankerConfig().get_str("log_level") == "INFO"
+    assert LeagueRankerConfig().get_str("log_level") == "ERROR"
 
 
 def test_cli__log_level_is_set(cli_runner):

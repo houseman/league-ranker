@@ -95,7 +95,7 @@ def cli(*args: P.args, **kwargs: P.kwargs) -> None:
     for i, ranking in enumerate(response.rankings, 1):
         name = ranking.team.name
         value = ranking.points.value
-        print(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
+        click.echo(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
     if config.get_bool("verbose", False):
         stats = get_stats()
