@@ -1,8 +1,9 @@
-"""The application entry point."""
-
+"""The CLI application entry point."""
+from __future__ import annotations
 
 import logging
 import os
+import typing as t
 from io import TextIOWrapper
 
 import click
@@ -13,8 +14,10 @@ from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
 from .utils import configure_logging, get_stats
 
+P = t.ParamSpec("P")
 
-@click.command()
+
+@click.command()  # type: ignore
 @click.argument("input", type=click.File(mode="r", encoding="locale"))
 @click.option(
     "--config",
@@ -58,30 +61,18 @@ from .utils import configure_logging, get_stats
     default=None,
     show_default=True,
 )
-def cli(
-    input: TextIOWrapper,
-    config_path: str | None,
-    strict_parse: bool | None,
-    verbose: bool | None,
-    log_level: str | None,
-) -> None:
+def cli(*args: P.args, **kwargs: P.kwargs) -> None:
     """
     Calculate and print the ranking table for a league.
 
     INPUT should be a input file path, or '-' for stdin.
     """
-    # If set, let cli args override env, file values
-    env = {}
-    if config_path is not None:
-        env["config_path"] = str(config_path)
-    if strict_parse is not None:
-        env["strict_parse"] = str(strict_parse)
-    if verbose is not None:
-        env["verbose"] = str(verbose)
-    if log_level is not None:
-        env["log_level"] = log_level
+    input = t.cast(TextIOWrapper, kwargs.pop("input"))  # This is the input file stream
 
-    config = LeagueRankerConfig.create(env)
+    # If set, let cli args override env, file values
+    config = LeagueRankerConfig.create(
+        {k: v for k, v in kwargs.items() if v is not None}
+    )
     configure_logging()
 
     if config.get_bool("strict_parse", False):
