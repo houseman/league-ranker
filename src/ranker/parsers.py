@@ -9,7 +9,7 @@ import typing as t
 
 from . import errors as err
 from . import models as m
-from .configurations import LeagueRankerConfiguration
+from .config import LeagueRankerConfiguration
 from .stats import LeagueRankerStats
 
 logger = logging.getLogger(__name__)

@@ -19,7 +19,7 @@ def config(mocker, config_yaml):
     """Use this configuration in test cases."""
     import yaml
 
-    from ranker.configurations import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfiguration
 
     mocker.patch.object(LeagueRankerConfiguration, "_load_from_file")
 

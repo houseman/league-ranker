@@ -8,7 +8,7 @@ from io import TextIOWrapper
 import click
 from tabulate import tabulate
 
-from .configurations import LeagueRankerConfiguration
+from .config import LeagueRankerConfiguration
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
 from .stats import LeagueRankerStats

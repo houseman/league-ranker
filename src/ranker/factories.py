@@ -3,7 +3,7 @@
 import logging
 
 from . import models as m
-from .configurations import LeagueRankerConfiguration
+from .config import LeagueRankerConfiguration
 
 logger = logging.getLogger(__name__)
 
