@@ -5,16 +5,12 @@ A command-line application that will calculate the ranking table for a league
 > **Note**
 > This package is intentionally *not* available on Pypi.
 
-There are two ways to acquire the source code:
+Clone the repository
 1. Use `git clone`
 ```shell
 ❯ git clone git@github.com:houseman/league-ranker.git
 ```
-2. Download a release tarball
-```shell
-# TODO
-```
-3. Change into the source directory
+2. Change into the source directory
 ```
 ❯ cd league-ranker
 ```

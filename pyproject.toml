@@ -1,6 +1,6 @@
 [project]
 name = "league-ranker"
-version = "0.0.1"
+version = "1.0.0"
 authors = [{ name = "Scott Houseman", email = "scott.houseman@gmail.com" }]
 maintainers = [{ name = "Scott Houseman", email = "scott.houseman@gmail.com" }]
 description = "A command-line application that will calculate the ranking table for a league"
