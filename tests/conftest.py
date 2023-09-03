@@ -24,3 +24,26 @@ def config():
     config.set("points_win", 3)
     config.set("points_loss", 0)
     config.set("points_draw", 1)
+
+
+@pytest.fixture
+def valid_input_data():
+    """Valid input data fixture."""
+    return """Lions 3, Snakes 3
+Tarantulas 1, FC Awesome 0
+Lions 1, FC Awesome 1
+Tarantulas 3, Snakes 1
+Lions 4, Grouches 0"""
+
+
+@pytest.fixture
+def config_yaml():
+    """Valid configuration YAML."""
+    return """config:
+  log_level: INFO
+  strict_parse: false
+  verbose: false
+  points_win: 3 # A win is worth 3 points
+  points_loss: 0 # A loss is worth 0 points
+  points_draw: 1 # A draw is worth 1 point
+"""

@@ -15,15 +15,7 @@ from .utils import configure_logging, get_stats
 
 
 @click.command()
-@click.option(
-    "--input",
-    "-i",
-    type=click.File(mode="r", encoding="locale"),
-    help=(
-        "Path to data input file to read from. "
-        "If not specified, input will be read from stdin."
-    ),
-)
+@click.argument("input", type=click.File(mode="r", encoding="locale"))
 @click.option(
     "--config",
     "-c",
@@ -73,7 +65,11 @@ def cli(
     verbose: bool | None,
     log_level: str | None,
 ) -> None:
-    """Calculate and print the ranking table for a league."""
+    """
+    Calculate and print the ranking table for a league.
+
+    INPUT should be a input file path, or '-' for stdin.
+    """
     # If set, let cli args override env, file values
     env = {}
     if config_path is not None:
