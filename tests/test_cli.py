@@ -119,3 +119,21 @@ def test_cli__log_level_is_set():
     )
     assert result.exit_code == 0
     assert LeagueRankerConfig().get_str("log_level") == "ERROR"
+
+
+def test_cli__config_path_is_set():
+    """
+    Given: The cli is invoked with a valid `--config` argument
+    When: The `--config` path is valid
+    Then: The configuration config_path value should be set
+    """
+    from ranker.configs import LeagueRankerConfig
+    from ranker.main import cli
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ["--input", "data/data.in", "--config", "src/league-ranker.yaml"],
+    )
+    assert result.exit_code == 0
+    assert LeagueRankerConfig().get_str("config_path") == "src/league-ranker.yaml"

@@ -25,6 +25,14 @@ from .utils import configure_logging, get_stats
     ),
 )
 @click.option(
+    "--config",
+    "-c",
+    "config_path",
+    type=click.Path(exists=True, file_okay=True, dir_okay=False),
+    help="Path to a configuration file",
+    default=None,
+)
+@click.option(
     "--strict",
     "-s",
     "strict_parse",
@@ -60,6 +68,7 @@ from .utils import configure_logging, get_stats
 )
 def cli(
     input: TextIOWrapper | None,
+    config_path: str | None,
     strict_parse: bool | None,
     verbose: bool | None,
     log_level: str | None,
@@ -67,6 +76,8 @@ def cli(
     """Calculate and print the ranking table for a league."""
     # If set, let cli args override env, file values
     env = {}
+    if config_path is not None:
+        env["config_path"] = str(config_path)
     if strict_parse is not None:
         env["strict_parse"] = str(strict_parse)
     if verbose is not None:
