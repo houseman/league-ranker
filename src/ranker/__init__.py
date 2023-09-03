@@ -1,3 +1,1 @@
-import os
-
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+from .main import cli  # noqa: F401 imported but unused

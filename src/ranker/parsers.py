@@ -11,12 +11,13 @@ import typing as t
 
 from . import errors as err
 from . import models as m
-from .utils import get_config, get_stats
+from .configs import LeagueRankerConfig
+from .utils import get_stats
 
 if t.TYPE_CHECKING:
     pass
 
-config = get_config()
+
 logger = logging.getLogger(__name__)
 
 
@@ -38,6 +39,8 @@ class LeagueRankerParser:
 
     def __init__(self) -> None:
         """The constructor."""
+        config = LeagueRankerConfig()
+
         self._stats = get_stats()
         self._strict_parse = config.get_bool("strict_parse", False)
 

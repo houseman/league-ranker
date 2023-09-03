@@ -1,5 +1,6 @@
 """Unit tests for the ranker.configs module."""
 import os
+import re
 
 import pytest
 
@@ -14,21 +15,6 @@ def config():
     See `tests/conftest.py`
     """
     pass
-
-
-def test_config__args_or_kwargs_in_constructor_raises_config_error():
-    """
-    Given: Create a new `LeagueRankerConfig` instance
-    When: Passing args or keyword args to the constructor
-    Then: Raise a `ConfigurationError` exception
-    """
-    from ranker.configs import LeagueRankerConfig
-
-    with pytest.raises(ConfigurationError):
-        LeagueRankerConfig(12)
-
-    with pytest.raises(ConfigurationError):
-        LeagueRankerConfig(foo="bar")
 
 
 @pytest.mark.parametrize(
@@ -145,7 +131,9 @@ def test_get_int__key_value_is_set_to_invalid_type():
         ("0", False),
         ("true", True),
         ("False", False),
+        (False, False),
         ("True", True),
+        (True, True),
         ("", False),
         ("1", True),
         (1, True),
@@ -234,3 +222,51 @@ def test_load_from_env_immutable(patched_environ):
     config.set("points_win", 15)
 
     assert config.get_int("points_win", 5)
+
+
+def test_load_from_file__file_does_not_exist():
+    """
+    Given: Reading a YAML file path
+    When: The given file does not exist
+    Then: Raise a `ConfigurationError` exception
+    """
+    from ranker.configs import LeagueRankerConfig
+
+    config = LeagueRankerConfig()
+    with pytest.raises(
+        ConfigurationError, match="Could not read from file '/foo/bar.in"
+    ):
+        config._load_from_file(path="/foo/bar.in")
+
+
+def test__find_config_path__no_file_at_path():
+    """
+    Given: Finding a YAML config file
+    When: No file can be found
+    Then: Raise a `ConfigurationError` exception
+    """
+    from ranker.configs import LeagueRankerConfig
+
+    config = LeagueRankerConfig()
+    config._config_dirs = ["/foo/bar"]
+    config._data.pop("config_path")
+
+    with pytest.raises(
+        ConfigurationError,
+        match=re.escape("No configuration file found in ['/foo/bar']"),
+    ):
+        config._find_config_path()
+
+
+def test__find_config_path__config_path_is_set():
+    """
+    Given: Finding a YAML config file
+    When: config_path is set
+    Then: return config_path
+    """
+    from ranker.configs import LeagueRankerConfig
+
+    config = LeagueRankerConfig()
+    config._data["config_path"] = "/foo/bar"
+
+    assert config._find_config_path() == "/foo/bar"

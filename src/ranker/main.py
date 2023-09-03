@@ -8,11 +8,10 @@ from io import TextIOWrapper
 import click
 from tabulate import tabulate
 
+from .configs import LeagueRankerConfig
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
-from .utils import configure_logging, get_config, get_stats
-
-config = get_config()
+from .utils import configure_logging, get_stats
 
 
 @click.command()
@@ -66,14 +65,16 @@ def cli(
     log_level: str | None,
 ) -> None:
     """Calculate and print the ranking table for a league."""
-    # If set, let cli args override env, file values by setting mutate=True
+    # If set, let cli args override env, file values
+    env = {}
     if strict_parse is not None:
-        config.set("strict_parse", strict_parse, mutate=True)
+        env["strict_parse"] = str(strict_parse)
     if verbose is not None:
-        config.set("verbose", verbose, mutate=True)
+        env["verbose"] = str(verbose)
     if log_level is not None:
-        config.set("log_level", log_level, mutate=True)
+        env["log_level"] = log_level
 
+    config = LeagueRankerConfig.create(env)
     configure_logging()
 
     if config.get_bool("strict_parse", False):
@@ -84,7 +85,7 @@ def cli(
         )
     if config.get_bool("verbose", False):
         click.secho(
-            f"Use config: {config.get_str('config_path')}{os.linesep}",
+            f"Using config: {config.get_str('config_path')}{os.linesep}",
             fg="blue",
         )
 

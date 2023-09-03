@@ -91,7 +91,8 @@ def test_cli__log_level_default():
     When: The `--log-level` flag is not set
     Then: The configuration log_level should be "INFO"
     """
-    from ranker.main import cli, config
+    from ranker.configs import LeagueRankerConfig
+    from ranker.main import cli
 
     runner = CliRunner()
     result = runner.invoke(
@@ -99,7 +100,7 @@ def test_cli__log_level_default():
         ["--input", "data/data.in"],
     )
     assert result.exit_code == 0
-    assert config.get_str("log_level") == "INFO"
+    assert LeagueRankerConfig().get_str("log_level") == "INFO"
 
 
 def test_cli__log_level_is_set():
@@ -108,7 +109,8 @@ def test_cli__log_level_is_set():
     When: The `--log-level` flag is set
     Then: The configuration log_level should be the selected level
     """
-    from ranker.main import cli, config
+    from ranker.configs import LeagueRankerConfig
+    from ranker.main import cli
 
     runner = CliRunner()
     result = runner.invoke(
@@ -116,4 +118,4 @@ def test_cli__log_level_is_set():
         ["--input", "data/data.in", "--log-level", "ERROR"],
     )
     assert result.exit_code == 0
-    assert config.get_str("log_level") == "ERROR"
+    assert LeagueRankerConfig().get_str("log_level") == "ERROR"

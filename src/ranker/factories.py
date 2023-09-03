@@ -3,9 +3,8 @@
 import logging
 
 from . import models as m
-from . import utils
+from .configs import LeagueRankerConfig
 
-config = utils.get_config()
 logger = logging.getLogger(__name__)
 
 
@@ -13,6 +12,7 @@ class LogTableFactory:
     """Factory produces a log table from match result data."""
 
     def __init__(self) -> None:
+        config = LeagueRankerConfig()
         self.points_win = config.get_int("points_win") or 3
         self.points_loss = config.get_int("points_loss") or 0
         self.points_draw = config.get_int("points_draw") or 1

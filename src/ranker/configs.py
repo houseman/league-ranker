@@ -6,15 +6,15 @@ Configuration may be set
 - Config file values
 - Or, setting through the `set` method.
 """
+from __future__ import annotations
 
 import logging
 import os
 import os.path
 import typing as t
+from pathlib import Path
 
 import yaml
-
-from ranker import ROOT_DIR
 
 from .errors import ConfigurationError
 from .meta import SingletonMeta
@@ -22,7 +22,7 @@ from .meta import SingletonMeta
 logger = logging.getLogger(__name__)
 
 
-S = t.TypeVar("S", bool, int, str)
+S = t.TypeVar("S", bound=bool | int | str)
 P = t.ParamSpec("P")
 KeyValuePairs: t.TypeAlias = dict[str, S]
 
@@ -30,29 +30,33 @@ KeyValuePairs: t.TypeAlias = dict[str, S]
 class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
     """Configuration model for League Ranker."""
 
-    _prefix = "CONFIG"
-    _config_filename = "config.yaml"
-    _config_dirs = [
-        os.getcwd(),
-        os.path.expanduser("~/.ranker/"),
-        os.path.abspath(os.path.join(ROOT_DIR, "../")),
-    ]
+    _prefix = ""  # Prefix for environment variable names
+    _config_filename = "config.yaml"  # Configuration file name
+    # Locations (directory paths) to search for configuration files
+    _config_dirs: list[str] = []
+    _truthey = [True, "True", "true"]  # Values that are considered `True`
 
-    def __init__(self, *args: P.args, **kwargs: P.kwargs) -> None:
-        """Configuration should not be added through this constructor."""
-        if args or kwargs:
-            raise ConfigurationError("Configuration cannot be added at initiation.")
-
+    def __init__(self) -> None:
         self._data: KeyValuePairs = {}
+
         self._load_from_env()
         self._load_from_file(self._find_config_path())
         logger.debug(f"Config {self._data} at init")
+
+    @classmethod
+    def create(cls, init: KeyValuePairs) -> BaseConfig:
+        """A static method to be used to create the first Singleton instance."""
+        for k, v in init.items():
+            print(f"Set env [{cls.env_key(k)}] = {v}")
+            os.environ[cls.env_key(k)] = str(v)
+
+        return cls()
 
     def set(self, key: str, value: S, mutate: bool = False) -> None:
         """
         Set a configuration name and value.
 
-        By default, configuration keys are immutable. Once set they are immutable.
+        By default, configuration keys are -- once set -- immutable.
         This behaviour can be disabled by setting the `mutate` parameter to `True`.
         """
         self._merge({key: value}, mutate=mutate)
@@ -101,7 +105,7 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
         If no default value is provided, a `ConfigurationError` exception will raise.
         """
         try:
-            return self._data[key] in [1, "1", "True", "true"]
+            return self._data[key] in self._truthey
         except KeyError:
             if default is not None:
                 return default
@@ -112,10 +116,17 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
         logger.info(f"Read config from file {path}")
 
         try:
-            with open(path) as file:
+            with open(path, encoding="locale") as file:
                 self._merge(yaml.safe_load(file).get("config", {}))
         except FileNotFoundError as e:
             raise ConfigurationError(f"Could not read from file '{path}'") from e
+
+    @classmethod
+    def env_key(cls, key: str) -> str:
+        """Return the prefixed environment variable name for the given key name."""
+        prefix = cls._prefix.upper() + "_"
+
+        return prefix + key.upper()
 
     def _load_from_env(self) -> None:
         """Load values from environment that match `sel._prefix."""
@@ -142,15 +153,20 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
 
     def _find_config_path(self) -> str:
         """Look for a config file path in pre-defined locations."""
-        if not self.has_key("config_path"):
-            # If this is not set in environment, then look for it in `_config_dirs`
-            for dir in self._config_dirs:
-                path = os.path.join(dir, self._config_filename)
-                logger.debug(f"Looking for config file {path}")
-                if os.path.isfile(path):
-                    self._merge({"config_path": path})
+        if self.has_key("config_path"):
+            return self.get_str("config_path")
 
-        return self.get_str("config_path")
+        # If this is not set in environment, then look for it in `_config_dirs`
+        for dir in self._config_dirs:
+            path = os.path.join(dir, self._config_filename)
+            logger.debug(f"Looking for config file {path}")
+
+            if os.path.isfile(path):
+                self._merge({"config_path": path})
+
+                return self.get_str("config_path")
+
+        raise ConfigurationError(f"No configuration file found in {self._config_dirs}")
 
 
 class LeagueRankerConfig(BaseConfig):
@@ -158,3 +174,10 @@ class LeagueRankerConfig(BaseConfig):
 
     _prefix = "RANKER"
     _config_filename = "league-ranker.yaml"
+    _config_dirs = [
+        os.getcwd(),  # Current working directory
+        os.path.expanduser("~/.ranker/"),  # ${HOME}/.ranker/
+        # Ranker base directory
+        Path(__file__).absolute().parent.parent.absolute().as_posix(),
+    ]
+    _truthey = [1, "1", True, "True", "true"]  # Values that should evaluate to `True`
