@@ -1,0 +1,52 @@
+========================================================================================
+Pool A
+========================================================================================
+Japan   30, Russia 10
+Ireland     27, Scotland 3
+Russia  9, Samoa 34
+Japan   19, Ireland 12
+Scotland    34, Samoa 0
+Ireland     35, Russia 0
+Japan   38,Samoa 19
+Scotland    61, Russia 0
+Ireland     47, Samoa 5
+Japan   28, Scotland 21
+========================================================================================
+Pool B
+========================================================================================
+New Zealand     23,South Africa     13
+Italy           47,Namibia          22
+Italy           48,Canada           7
+South Africa    57,Namibia          3
+New Zealand     63,Canada           0
+South Africa    49,Italy            3
+New Zealand     71,Namibia          9
+South Africa    66,Canada           7
+New Zealand     0,Italy             0
+Namibia         0,Canada            0
+========================================================================================
+Pool C
+========================================================================================
+France  23,    Argentina 21
+England     35,     Tonga 3
+England     45,United States 7
+Argentina   28,Tonga 12
+France  33,United States 9
+England     39,Argentina 10
+France  23,Tonga 21
+Argentina   47,United States 17
+England     0,France 0
+United States   19,    Tonga 31
+========================================================================================
+Pool D
+========================================================================================
+Australia   39,     Fiji        21
+Wales       43,     Georgia     14
+Fiji        27,     Uruguay     30
+Georgia     33,     Uruguay     7
+Australia   25,     Wales       29
+Georgia     10,     Fiji        45
+Australia   45,     Uruguay     10
+Wales       29,     Fiji        17
+Australia   27,     Georgia     8
+Wales       35,     Uruguay     13
