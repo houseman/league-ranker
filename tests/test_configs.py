@@ -234,9 +234,7 @@ def test_load_from_file__file_does_not_exist(mocker):
 
     mocker.patch("builtins.open", side_effect=FileNotFoundError())
 
-    with pytest.raises(
-        ConfigurationError, match="Could not read from file '/var/foo/bar.yaml'"
-    ):
+    with pytest.raises(ConfigurationError, match="Could not read from file 'var.yaml'"):
         LeagueRankerConfig()
 
 
