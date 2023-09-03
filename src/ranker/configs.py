@@ -18,7 +18,6 @@ from pathlib import Path
 import yaml
 
 from .errors import ConfigurationError
-from .meta import SingletonMeta
 
 logger = logging.getLogger(__name__)
 
@@ -28,14 +27,18 @@ P = t.ParamSpec("P")
 KeyValuePairs: t.TypeAlias = dict[str, S]
 
 
-class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
-    """Configuration model for League Ranker."""
+class LeagueRankerConfig:
+    """Configuration container for League Ranker."""
 
-    _prefix = ""  # Prefix for environment variable names
-    _config_filename = "config.yaml"  # Configuration file name
-    # Locations (directory paths) to search for configuration files
-    _config_dirs: list[str] = []
-    _truthey = [True, "True", "true"]  # Values that are considered `True`
+    _prefix = "RANKER"
+    _config_filename = "league-ranker.yaml"
+    _config_dirs = [
+        os.getcwd(),  # Current working directory
+        os.path.expanduser("~/.ranker/"),  # ${HOME}/.ranker/
+        # Ranker base directory
+        Path(__file__).absolute().parent.parent.absolute().as_posix(),
+    ]
+    _truthey = [1, "1", True, "True", "true"]  # Values that should evaluate to `True`
 
     def __init__(self) -> None:
         self._data: KeyValuePairs = {}
@@ -45,26 +48,18 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
         logger.info(f"Config {self._data} at init")
 
     @classmethod
-    def create(cls, init: KeyValuePairs) -> BaseConfig:
+    def create(cls, init: KeyValuePairs | None = None) -> LeagueRankerConfig:
         """
         A static method to be used to create the first Singleton instance.
 
-        A dictionary containing key:value pairs may be given as a parameter. These will
-        be injected into the environment before creating the instance.
+        A dictionary containing key:value pairs may be given as an `init` parameter.
+        These pairs will be injected into the environment before creating the instance.
         """
-        for k, v in init.items():
-            os.environ[cls.env_key(k)] = str(v)
+        if init is not None:
+            for k, v in init.items():
+                os.environ[cls.env_key(k)] = str(v)
 
         return cls()
-
-    def set(self, key: str, value: S, mutate: bool = False) -> None:
-        """
-        Set a configuration name and value.
-
-        By default, configuration keys are -- once set -- immutable.
-        This behaviour can be disabled by setting the `mutate` parameter to `True`.
-        """
-        self._merge({key: value}, mutate=mutate)
 
     def has_key(self, key: str) -> bool:
         """Return `True` if the given key has a set value, else `False`."""
@@ -172,17 +167,3 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
                 return self.get_str("config_path")
 
         raise ConfigurationError(f"No configuration file found in {self._config_dirs}")
-
-
-class LeagueRankerConfig(BaseConfig):
-    """Configuration container for League Ranker."""
-
-    _prefix = "RANKER"
-    _config_filename = "league-ranker.yaml"
-    _config_dirs = [
-        os.getcwd(),  # Current working directory
-        os.path.expanduser("~/.ranker/"),  # ${HOME}/.ranker/
-        # Ranker base directory
-        Path(__file__).absolute().parent.parent.absolute().as_posix(),
-    ]
-    _truthey = [1, "1", True, "True", "true"]  # Values that should evaluate to `True`

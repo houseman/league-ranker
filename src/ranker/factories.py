@@ -12,10 +12,9 @@ class LogTableFactory:
     """Factory produces a log table from match result data."""
 
     def __init__(self) -> None:
-        config = LeagueRankerConfig()
-        self.points_win = config.get_int("points_win") or 3
-        self.points_loss = config.get_int("points_loss") or 0
-        self.points_draw = config.get_int("points_draw") or 1
+        self.points_win = LeagueRankerConfig().get_int("points_win") or 3
+        self.points_loss = LeagueRankerConfig().get_int("points_loss") or 0
+        self.points_draw = LeagueRankerConfig().get_int("points_draw") or 1
 
     def build(self, input: m.FixtureListModel) -> m.RankingTableModel:
         """Build a log table."""

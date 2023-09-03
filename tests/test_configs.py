@@ -1,10 +1,18 @@
 """Unit tests for the ranker.configs module."""
 import os
 import re
+from unittest import mock
 
 import pytest
 
 from ranker.errors import ConfigurationError
+
+
+@pytest.fixture(autouse=True)
+def environment(mocker):
+    """Patch environment variables."""
+    with mock.patch.dict(os.environ, {}, clear=True):
+        yield
 
 
 @pytest.fixture
@@ -15,6 +23,19 @@ def config(mocker, config_yaml):
     See `tests/conftest.py`
     """
     mocker.patch("builtins.open", mocker.mock_open(read_data=config_yaml))
+
+
+def test_create__none_init_value(mocker):
+    """
+    Given: A `LeagueRankerConfig` instance is created using the `create()` method
+    When: A `None` init value is passed (default)
+    Then: The environment is not updated
+    """
+    from ranker.configs import LeagueRankerConfig, os
+
+    LeagueRankerConfig.create()
+
+    assert list(os.environ.keys()) == ["PYTEST_CURRENT_TEST"]
 
 
 @pytest.mark.parametrize(
@@ -43,10 +64,8 @@ def test_get_str__key_value_is_not_set_no_default_given():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-
     with pytest.raises(ConfigurationError, match="Configuration key 'foo' is not set"):
-        config.get_str("foo")
+        LeagueRankerConfig().get_str("foo")
 
 
 def test_get_str__key_value_is_not_set_default_given():
@@ -57,9 +76,7 @@ def test_get_str__key_value_is_not_set_default_given():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-
-    assert config.get_str("foo", "baz") == "baz"
+    assert LeagueRankerConfig().get_str("foo", "baz") == "baz"
 
 
 @pytest.mark.parametrize(
@@ -74,10 +91,7 @@ def test_get_int__key_value_is_set(value, expected):
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config._merge({"bar": value})
-
-    assert config.get_int("bar") == expected
+    assert LeagueRankerConfig.create({"bar": value}).get_int("bar") == expected
 
 
 def test_get_int__key_value_is_not_set_no_default_given():
@@ -88,10 +102,8 @@ def test_get_int__key_value_is_not_set_no_default_given():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-
     with pytest.raises(ConfigurationError, match="Configuration key 'foo' is not set"):
-        config.get_int("foo")
+        LeagueRankerConfig().get_int("foo")
 
 
 def test_get_int__key_value_is_not_set_default_given():
@@ -102,9 +114,7 @@ def test_get_int__key_value_is_not_set_default_given():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-
-    assert config.get_int("foo", 345) == 345
+    assert LeagueRankerConfig().get_int("foo", 345) == 345
 
 
 def test_get_int__key_value_is_set_to_invalid_type():
@@ -115,8 +125,7 @@ def test_get_int__key_value_is_set_to_invalid_type():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config._merge({"box": "red"})
+    config = LeagueRankerConfig.create({"box": "red"})
 
     with pytest.raises(
         ConfigurationError,
@@ -148,8 +157,7 @@ def test_get_bool__key_value_is_set(value, expected):
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config._merge({"bag": value})
+    config = LeagueRankerConfig.create({"bag": value})
 
     assert config.get_bool("bag") == expected
 
@@ -162,10 +170,8 @@ def test_get_bool__key_value_is_not_set_no_default_given():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-
     with pytest.raises(ConfigurationError, match="Configuration key 'foo' is not set"):
-        config.get_bool("foo")
+        LeagueRankerConfig().get_bool("foo")
 
 
 def test_get_bool__key_value_is_not_set_default_given():
@@ -176,26 +182,20 @@ def test_get_bool__key_value_is_not_set_default_given():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-
-    assert config.get_bool("boo", True) is True
-    assert config.get_bool("bot", False) is False
+    assert LeagueRankerConfig().get_bool("boo", True) is True
+    assert LeagueRankerConfig().get_bool("bot", False) is False
 
 
-@pytest.fixture
-def patched_environ(mocker):
-    """Patch environment variables."""
-    mocker.patch.dict(
-        os.environ,
-        {
-            "RANKER_STRICT_PARSER": "true",
-            "RANKER_points_win": "5",
-            "RANKER_SUCCESS_MESSAGE": "Done",
-        },
-    )
-
-
-def test_load_from_env(patched_environ):
+@mock.patch.dict(
+    os.environ,
+    {
+        "RANKER_STRICT_PARSER": "true",
+        "RANKER_POINTS_WIN": "5",
+        "RANKER_SUCCESS_MESSAGE": "Done",
+    },
+    clear=True,
+)
+def test_load_from_env():
     """
     Given: Correctly-prefixed environment variables are set
     When: Requesting the key from `LeagueRankerConfig`
@@ -203,25 +203,11 @@ def test_load_from_env(patched_environ):
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
+    config = LeagueRankerConfig.create()
 
     assert config.get_bool("strict_parser") is True
     assert config.get_int("points_win", 5)
     assert config.get_str("success_message", "Done")
-
-
-def test_load_from_env_immutable(patched_environ):
-    """
-    Given: Correctly-prefixed environment variables are set
-    When: Setting the key value
-    Then: The key value is immutable
-    """
-    from ranker.configs import LeagueRankerConfig
-
-    config = LeagueRankerConfig()
-    config.set("points_win", 15)
-
-    assert config.get_int("points_win", 5)
 
 
 def test_load_from_file__file_does_not_exist(mocker):
@@ -234,8 +220,10 @@ def test_load_from_file__file_does_not_exist(mocker):
 
     mocker.patch("builtins.open", side_effect=FileNotFoundError())
 
-    with pytest.raises(ConfigurationError, match="Could not read from file 'var.yaml'"):
-        LeagueRankerConfig()
+    with pytest.raises(
+        ConfigurationError, match="Could not read from file '/var/foo.yaml'"
+    ):
+        LeagueRankerConfig.create({"config_path": "/var/foo.yaml"})
 
 
 def test__find_config_path__file_exists_at_path(mocker):

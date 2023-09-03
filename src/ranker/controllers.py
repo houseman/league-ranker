@@ -1,8 +1,4 @@
-"""
-Controller classes contain business and flow logic.
-
-The `LeagueRankController` class follows the builder pattern
-"""
+"""Controller classes contain business and flow logic."""
 
 from __future__ import annotations
 
@@ -23,11 +19,8 @@ class LeagueRankController:
         self._factory = LogTableFactory()
         self._parser = LeagueRankerParser()
 
-    def create_log_table(
-        self,
-        request: CreateLogTableRequest,
-    ) -> m.RankingTableModel:
-        """Create an return a League Log Table."""
+    def create_log_table(self, request: CreateLogTableRequest) -> m.RankingTableModel:
+        """Create and return a League Log Table."""
         parsed_data = self.parse(data=request.data)
         table = self.build(data=parsed_data)
         response = self.sort(table=table)

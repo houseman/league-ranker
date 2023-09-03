@@ -183,6 +183,17 @@ Note: Strict parsing is enabled.
 5. Grouches, 0 pts
 ```
 
+These environment variable names correspond to those in the YAML configuration file with the name in UPPERCASE, prefixed by `RANKER_`.
+
+| YAML | ENV | Default |
+| ---- | --- | ------- |
+| `config.log_level` | `RANKER_LOG_LEVEL` | `ERROR` |
+| `config.strict_parse` | `RANKER_STRICT_PARSE` | `False` |
+| `config.verbose` | `RANKER_VERBOSE` | `False` |
+| `config.points_win` | `RANKER_POINTS_WIN` | `3` |
+| `config.points_loss` | `RANKER_POINTS_LOSS` | `0` |
+| `config.points_draw` | `RANKER_POINTS_DRAW` | `1` |
+
 > **Important**
 > There is precedence to these configuration methods. From highest to lowest priority:
 > 1. Command line options (supersede)
@@ -200,6 +211,18 @@ lint                 Run linters
 test                 Run tests
 tool                 Install development tools
 ```
+### Installation
+To install the package as editable, run:
+```
+❯ python -m pip install  --editable .
+```
+To install the required development tools, run:
+```shell
+❯ python -m pip install  ".[dev]"
+```
+> **Note**
+> `make tool` will do both of the above for you.
+
 ### Linting
 The following linting tools are used, and can be run through `make lint`:
 - `black` code formatter
