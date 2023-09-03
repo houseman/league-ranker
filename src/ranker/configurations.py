@@ -27,12 +27,12 @@ P = t.ParamSpec("P")
 KeyValuePairs: t.TypeAlias = dict[str, S]
 
 
-class LeagueRankerConfig:
+class LeagueRankerConfiguration:
     """Configuration container for League Ranker."""
 
-    _prefix = "RANKER"
+    _prefix = "RANKER"  # Prefix to environment variable names
     _config_filename = "league-ranker.yaml"
-    _config_dirs = [
+    _config_dirs = [  # Search through these for configuration file
         os.getcwd(),  # Current working directory
         os.path.expanduser("~/.ranker/"),  # ${HOME}/.ranker/
         # Ranker base directory
@@ -48,7 +48,7 @@ class LeagueRankerConfig:
         logger.info(f"Config {self._data} at init")
 
     @classmethod
-    def create(cls, init: KeyValuePairs | None = None) -> LeagueRankerConfig:
+    def create(cls, init: KeyValuePairs | None = None) -> LeagueRankerConfiguration:
         """
         A static method to be used to create the first Singleton instance.
 

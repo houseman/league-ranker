@@ -8,7 +8,7 @@ from io import TextIOWrapper
 import click
 from tabulate import tabulate
 
-from .configs import LeagueRankerConfig
+from .configurations import LeagueRankerConfiguration
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
 from .utils import configure_logging, get_stats
@@ -69,7 +69,7 @@ def cli(*args: P.args, **kwargs: P.kwargs) -> None:
     input = t.cast(TextIOWrapper, kwargs.pop("input"))  # This is the input file stream
 
     # If set, let cli args override env, file values
-    config = LeagueRankerConfig.create(
+    config = LeagueRankerConfiguration.create(
         {k: v for k, v in kwargs.items() if v is not None}
     )
     configure_logging()

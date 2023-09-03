@@ -2,13 +2,13 @@
 
 import logging
 
-from .configs import LeagueRankerConfig
+from .configurations import LeagueRankerConfiguration
 from .stats import LeagueRankerStats
 
 
 def configure_logging() -> None:
     """Configure the Python logger."""
-    log_level = LeagueRankerConfig().get_str("log_level", "INFO")
+    log_level = LeagueRankerConfiguration().get_str("log_level", "INFO")
     level = logging.getLevelNamesMapping()[log_level]
     logging.basicConfig(
         level=level,
