@@ -43,7 +43,7 @@ def test_cli__invalid_input_path_given():
     from ranker.main import cli
 
     runner = CliRunner()
-    result = runner.invoke(cli, ["foo.in"])
+    result = runner.invoke(cli, ["var.in"])
     assert result.exit_code == 2
     assert "No such file or directory" in result.output
 
@@ -127,3 +127,28 @@ def test_cli__log_level_is_set(cli_runner):
     result = cli_runner.invoke(cli, ["foo.in", "--log-level", "ERROR"])
     assert result.exit_code == 0
     assert LeagueRankerConfig().get_str("log_level") == "ERROR"
+
+
+"""
+def test_cli__config_path_is_set(valid_input_data, config_yaml):
+    '''
+    Given: The cli is invoked with a valid file path argument
+    When: The `--config` path is valid
+    Then: The configuration config_path value should be set
+    '''
+    from ranker.configs import LeagueRankerConfig
+    from ranker.main import cli
+
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("foo.in", "w") as f:
+            f.write(valid_input_data)
+
+        with open("var.yaml", "w") as f:
+            f.write(config_yaml)
+
+        result = runner.invoke(cli, ["foo.in", "--config", "var.yaml"])
+
+    assert result.exit_code == 0
+    # assert LeagueRankerConfig().get_str("config_path") == "var.yaml"
+"""

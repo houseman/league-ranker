@@ -15,15 +15,15 @@ def singleton(mocker):
 
 
 @pytest.fixture(autouse=True)
-def config():
+def config(mocker, config_yaml):
     """Use this configuration in test cases."""
+    import yaml
+
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config.set("strict_parse", False)
-    config.set("points_win", 3)
-    config.set("points_loss", 0)
-    config.set("points_draw", 1)
+    mocker.patch.object(LeagueRankerConfig, "_load_from_file")
+
+    LeagueRankerConfig.create(yaml.safe_load(config_yaml).get("config", {}))
 
 
 @pytest.fixture
@@ -41,6 +41,7 @@ def config_yaml():
     """Valid configuration YAML."""
     return """config:
   log_level: INFO
+  config_path: /var/foo/bar.yaml
   strict_parse: false
   verbose: false
   points_win: 3 # A win is worth 3 points

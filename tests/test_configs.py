@@ -8,13 +8,13 @@ from ranker.errors import ConfigurationError
 
 
 @pytest.fixture
-def config():
+def config(mocker, config_yaml):
     """
     Disable the `config` auto fixture for these tests.
 
     See `tests/conftest.py`
     """
-    pass
+    mocker.patch("builtins.open", mocker.mock_open(read_data=config_yaml))
 
 
 @pytest.mark.parametrize(
@@ -224,7 +224,7 @@ def test_load_from_env_immutable(patched_environ):
     assert config.get_int("points_win", 5)
 
 
-def test_load_from_file__file_does_not_exist():
+def test_load_from_file__file_does_not_exist(mocker):
     """
     Given: Reading a YAML file path
     When: The given file does not exist
@@ -232,11 +232,29 @@ def test_load_from_file__file_does_not_exist():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
+    mocker.patch("builtins.open", side_effect=FileNotFoundError())
+
     with pytest.raises(
-        ConfigurationError, match="Could not read from file '/foo/bar.in"
+        ConfigurationError, match="Could not read from file '/var/foo/bar.yaml'"
     ):
-        config._load_from_file(path="/foo/bar.in")
+        LeagueRankerConfig()
+
+
+def test__find_config_path__file_exists_at_path(mocker):
+    """
+    Given: Finding a YAML config file
+    When: A valid file is found
+    Then: Load that file
+    """
+    mocker.patch("os.path.isfile", return_value=True)
+
+    from ranker.configs import LeagueRankerConfig
+
+    config = LeagueRankerConfig()
+    config._config_dirs = ["/foo/bar"]
+    config._data.pop("config_path")
+
+    assert config._find_config_path() == "/foo/bar/league-ranker.yaml"
 
 
 def test__find_config_path__no_file_at_path():
