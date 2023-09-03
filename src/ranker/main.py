@@ -6,12 +6,11 @@ import typing as t
 from io import TextIOWrapper
 
 import click
-from tabulate import tabulate
 
 from .config import LeagueRankerConfiguration
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
-from .stats import LeagueRankerStats
+from .views import CreateLogTableRequestView
 
 P = t.ParamSpec("P")
 
@@ -86,19 +85,4 @@ def cli(*args: P.args, **kwargs: P.kwargs) -> None:
     controller = LeagueRankController()
     response = controller.create_log_table(request=request)
 
-    for i, ranking in enumerate(response.rankings, 1):
-        name = ranking.team.name
-        value = ranking.points.value
-        click.echo(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
-
-    if config.get_bool("verbose", False):
-        stats = LeagueRankerStats()
-
-        headers = ["Imported", "Processed", "Failed"]
-        rows = [[stats["read"], stats["parsed"], stats["error"]]]
-        table = tabulate(rows, headers, tablefmt="fancy_grid")
-
-        click.secho(f"{os.linesep*2}Statistics:", bold=True)
-        click.echo(table)
-
-    return None
+    return CreateLogTableRequestView.render(response)
