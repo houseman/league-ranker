@@ -20,6 +20,7 @@ from pathlib import Path
 import yaml
 
 from .errors import ConfigurationError
+from .meta import SingletonMeta
 
 logger = logging.getLogger(__name__)
 
@@ -29,8 +30,8 @@ P = t.ParamSpec("P")
 KeyValuePairs: t.TypeAlias = dict[str, S]
 
 
-class LeagueRankerConfiguration:
-    """Configuration container for League Ranker."""
+class LeagueRankerConfiguration(metaclass=SingletonMeta):
+    """A Singleton container for League Ranker configuration."""
 
     _prefix = "RANKER"  # Prefix to environment variable names
     _config_filename = "league-ranker.yaml"
@@ -43,6 +44,7 @@ class LeagueRankerConfiguration:
     _truthey = [1, "1", True, "True", "true"]  # Values that should evaluate to `True`
 
     def __init__(self) -> None:
+        self._configure_logging()
         self._load_from_file(self._find_config_path())
 
     @classmethod
@@ -154,3 +156,15 @@ class LeagueRankerConfiguration:
                 return self.get_str("config_path")
 
         raise ConfigurationError(f"No configuration file found in {self._config_dirs}")
+
+    def _configure_logging(self) -> None:
+        """Configure the Python logger."""
+        log_level_str = self.get_str("log_level", "ERROR")
+        log_level_int = logging.getLevelNamesMapping()[log_level_str]
+        logging.basicConfig(
+            level=log_level_int,
+            format="%(asctime)s - %(levelname)s - %(message)s",
+        )
+
+        logger = logging.getLogger(__name__)
+        logger.debug(f"Logging is configured (level: {log_level_str})")

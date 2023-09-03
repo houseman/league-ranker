@@ -10,7 +10,7 @@ import typing as t
 from . import errors as err
 from . import models as m
 from .configurations import LeagueRankerConfiguration
-from .utils import get_stats
+from .stats import LeagueRankerStats
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class LeagueRankerParser:
 
     def __init__(self) -> None:
         """The constructor."""
-        self._stats = get_stats()
+        self._stats = LeagueRankerStats()
         self._strict_parse = LeagueRankerConfiguration().get_bool("strict_parse", False)
 
     def parse(self, data: str) -> m.FixtureListModel:

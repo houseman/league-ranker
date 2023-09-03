@@ -109,8 +109,6 @@ Use the `--verbose` or `-v` option to increase `rank` verbosity.
 Doing so will enable printing of statistics at completion.
 ```shell
 ❯ rank data/data.in --verbose
-Using config: ...league-ranker.yaml
-
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. Fc Awesome, 1 pt

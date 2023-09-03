@@ -11,7 +11,7 @@ from tabulate import tabulate
 from .configurations import LeagueRankerConfiguration
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
-from .utils import configure_logging, get_stats
+from .stats import LeagueRankerStats
 
 P = t.ParamSpec("P")
 
@@ -72,18 +72,13 @@ def cli(*args: P.args, **kwargs: P.kwargs) -> None:
     config = LeagueRankerConfiguration.create(
         {k: v for k, v in kwargs.items() if v is not None}
     )
-    configure_logging()
 
+    click.echo()
     if config.get_bool("strict_parse", False):
         click.secho(
-            f"{os.linesep}Note: Strict parsing is enabled.{os.linesep}",
+            f"Note: Strict parsing is enabled.{os.linesep}",
             fg="red",
             bold=True,
-        )
-    if config.get_bool("verbose", False):
-        click.secho(
-            f"Using config: {config.get_str('config_path')}{os.linesep}",
-            fg="blue",
         )
 
     request = CreateLogTableRequest(data=input.read())
@@ -97,7 +92,7 @@ def cli(*args: P.args, **kwargs: P.kwargs) -> None:
         click.echo(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
     if config.get_bool("verbose", False):
-        stats = get_stats()
+        stats = LeagueRankerStats()
 
         headers = ["Imported", "Processed", "Failed"]
         rows = [[stats["read"], stats["parsed"], stats["error"]]]
