@@ -21,11 +21,11 @@ def config(mocker, config_yaml):
     """Use this configuration in test cases."""
     import yaml
 
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    mocker.patch.object(LeagueRankerConfiguration, "_load_from_file")
+    mocker.patch.object(LeagueRankerConfig, "_load_from_file")
 
-    LeagueRankerConfiguration.create(yaml.safe_load(config_yaml).get("config", {}))
+    LeagueRankerConfig.create(yaml.safe_load(config_yaml).get("config", {}))
 
 
 @pytest.fixture

@@ -30,7 +30,7 @@ P = t.ParamSpec("P")
 KeyValuePairs: t.TypeAlias = dict[str, S]
 
 
-class LeagueRankerConfiguration(metaclass=SingletonMeta):
+class LeagueRankerConfig(metaclass=SingletonMeta):
     """A Singleton container for League Ranker configuration."""
 
     _prefix = "RANKER"  # Prefix to environment variable names
@@ -39,7 +39,7 @@ class LeagueRankerConfiguration(metaclass=SingletonMeta):
         os.getcwd(),  # Current working directory
         os.path.expanduser("~/.ranker/"),  # ${HOME}/.ranker/
         # Ranker base directory
-        Path(__file__).absolute().parent.parent.absolute().as_posix(),
+        Path(__file__).absolute().parent.absolute().as_posix(),
     ]
     _truthey = [1, "1", True, "True", "true"]  # Values that should evaluate to `True`
 
@@ -48,7 +48,7 @@ class LeagueRankerConfiguration(metaclass=SingletonMeta):
         self._load_from_file(self._find_config_path())
 
     @classmethod
-    def create(cls, init: KeyValuePairs | None = None) -> LeagueRankerConfiguration:
+    def create(cls, init: KeyValuePairs | None = None) -> LeagueRankerConfig:
         """
         A static method to be used to create the first Singleton instance.
 
