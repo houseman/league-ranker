@@ -1,5 +1,4 @@
-"""Unit test for the Parser."""
-
+"""Unit tests for the `ranker.parsers` module."""
 import pytest
 
 from ranker import models as m

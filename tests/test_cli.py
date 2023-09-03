@@ -135,6 +135,7 @@ def test_cli__config_path_is_set(valid_input_data, config_yaml):
     When: The `--config` path is valid
     Then: The configuration config_path value should be set
     """
+    from ranker.configs import LeagueRankerConfig
     from ranker.main import cli
 
     runner = CliRunner()
@@ -148,4 +149,4 @@ def test_cli__config_path_is_set(valid_input_data, config_yaml):
         result = runner.invoke(cli, ["foo.in", "--config", "var.yaml"])
 
     assert result.exit_code == 0
-    # assert LeagueRankerConfig().get_str("config_path") == "var.yaml"
+    assert LeagueRankerConfig().get_str("config_path") == "var.yaml"

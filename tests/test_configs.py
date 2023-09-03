@@ -1,4 +1,4 @@
-"""Unit tests for the ranker.configs module."""
+"""Unit tests for the `ranker.configs` module."""
 import os
 import re
 from unittest import mock
@@ -50,8 +50,7 @@ def test_get_str__key_value_is_set(value, expected):
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config._merge({"foo": value})
+    config = LeagueRankerConfig.create({"foo": value})
 
     assert config.get_str("foo") == expected
 

@@ -1,4 +1,4 @@
-"""Test cases for the stats counter."""
+"""Unit tests for the `ranker.stats` module."""
 import pytest
 
 

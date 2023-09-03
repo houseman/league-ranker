@@ -1,4 +1,4 @@
-"""Unit tests for the ranker.meta module."""
+"""Unit tests for the `ranker.meta` module."""
 import pytest
 
 

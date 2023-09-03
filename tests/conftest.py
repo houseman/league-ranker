@@ -1,11 +1,11 @@
-"""Pytest fixtures for this module"""
+"""Pytest fixtures for all modules."""
 
 import pytest
 
 
 @pytest.fixture(autouse=True)
 def singleton(mocker):
-    """Patch the SingletonMeta class to disable Singleton behaviour."""
+    """Patch the SingletonMeta class to *disable* Singleton behaviour."""
     from ranker.meta import SingletonMeta
 
     def patch_call(cls, *args, **kwargs):
