@@ -236,9 +236,8 @@ def test__find_config_path__file_exists_at_path(mocker):
 
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config._config_dirs = ["/foo/bar"]
-    config._data.pop("config_path")
+    LeagueRankerConfig._config_dirs = ["/foo/bar"]
+    config = LeagueRankerConfig.create()
 
     assert config._find_config_path() == "/foo/bar/league-ranker.yaml"
 
@@ -251,15 +250,13 @@ def test__find_config_path__no_file_at_path():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config._config_dirs = ["/foo/bar"]
-    config._data.pop("config_path")
+    LeagueRankerConfig._config_dirs = ["/foo/bar"]
 
     with pytest.raises(
         ConfigurationError,
         match=re.escape("No configuration file found in ['/foo/bar']"),
     ):
-        config._find_config_path()
+        LeagueRankerConfig.create()
 
 
 def test__find_config_path__config_path_is_set():
@@ -270,7 +267,6 @@ def test__find_config_path__config_path_is_set():
     """
     from ranker.configs import LeagueRankerConfig
 
-    config = LeagueRankerConfig()
-    config._data["config_path"] = "/foo/bar"
+    config = LeagueRankerConfig.create({"config_path": "/foo/bar.yaml"})
 
-    assert config._find_config_path() == "/foo/bar"
+    assert config._find_config_path() == "/foo/bar.yaml"

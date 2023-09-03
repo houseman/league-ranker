@@ -33,10 +33,8 @@ class LeagueRankerParser:
 
     def __init__(self) -> None:
         """The constructor."""
-        config = LeagueRankerConfig()
-
         self._stats = get_stats()
-        self._strict_parse = config.get_bool("strict_parse", False)
+        self._strict_parse = LeagueRankerConfig().get_bool("strict_parse", False)
 
     def parse(self, data: str) -> m.FixtureListModel:
         """Parse request input data."""
