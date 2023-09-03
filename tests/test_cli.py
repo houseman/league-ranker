@@ -107,12 +107,12 @@ def test_cli__log_level_default(cli_runner):
     When: The `--log-level` flag is not set
     Then: The configuration log_level should be "ERROR"
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
     from ranker.main import cli
 
     result = cli_runner.invoke(cli, ["foo.in"])
     assert result.exit_code == 0
-    assert LeagueRankerConfiguration().get_str("log_level") == "ERROR"
+    assert LeagueRankerConfig().get_str("log_level") == "ERROR"
 
 
 def test_cli__log_level_is_set(cli_runner):
@@ -121,12 +121,12 @@ def test_cli__log_level_is_set(cli_runner):
     When: The `--log-level` flag is set
     Then: The configuration log_level should be the selected level
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
     from ranker.main import cli
 
     result = cli_runner.invoke(cli, ["foo.in", "--log-level", "ERROR"])
     assert result.exit_code == 0
-    assert LeagueRankerConfiguration().get_str("log_level") == "ERROR"
+    assert LeagueRankerConfig().get_str("log_level") == "ERROR"
 
 
 def test_cli__config_path_is_set(valid_input_data, config_yaml):
@@ -135,7 +135,7 @@ def test_cli__config_path_is_set(valid_input_data, config_yaml):
     When: The `--config` path is valid
     Then: The configuration config_path value should be set
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
     from ranker.main import cli
 
     runner = CliRunner()
@@ -149,4 +149,4 @@ def test_cli__config_path_is_set(valid_input_data, config_yaml):
         result = runner.invoke(cli, ["foo.in", "--config", "var.yaml"])
 
     assert result.exit_code == 0
-    assert LeagueRankerConfiguration().get_str("config_path") == "var.yaml"
+    assert LeagueRankerConfig().get_str("config_path") == "var.yaml"

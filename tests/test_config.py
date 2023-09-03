@@ -27,14 +27,14 @@ def config(mocker, config_yaml):
 
 def test_create__none_init_value(mocker):
     """
-    Given: A `LeagueRankerConfiguration` instance is created using the `create()` method
+    Given: A `LeagueRankerConfig` instance is created using the `create()` method
     When: A `None` init value is passed (default)
     Then: The environment is not mutated
     """
-    from ranker.config import LeagueRankerConfiguration, os
+    from ranker.config import LeagueRankerConfig, os
 
     expected = os.environ
-    LeagueRankerConfiguration.create()
+    LeagueRankerConfig.create()
 
     assert os.environ == expected  # Not mutated
 
@@ -45,38 +45,38 @@ def test_create__none_init_value(mocker):
 )
 def test_get_str__key_value_is_set(value, expected):
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting a string value for a key that is set
     Then: Return the string value for that key
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    config = LeagueRankerConfiguration.create({"foo": value})
+    config = LeagueRankerConfig.create({"foo": value})
 
     assert config.get_str("foo") == expected
 
 
 def test_get_str__key_value_is_not_set_no_default_given():
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting a string value for a key that is not set, with no default value
     Then: raise a `ConfigurationError` exception
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
     with pytest.raises(ConfigurationError, match="Configuration key 'foo' is not set"):
-        LeagueRankerConfiguration().get_str("foo")
+        LeagueRankerConfig().get_str("foo")
 
 
 def test_get_str__key_value_is_not_set_default_given():
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting a string value for a key that is not set, and a default value
     Then: Return the default value
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    assert LeagueRankerConfiguration().get_str("foo", "baz") == "baz"
+    assert LeagueRankerConfig().get_str("foo", "baz") == "baz"
 
 
 @pytest.mark.parametrize(
@@ -85,47 +85,47 @@ def test_get_str__key_value_is_not_set_default_given():
 )
 def test_get_int__key_value_is_set(value, expected):
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting an integer value for a key that is set
     Then: Return the integer value for that key
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    assert LeagueRankerConfiguration.create({"bar": value}).get_int("bar") == expected
+    assert LeagueRankerConfig.create({"bar": value}).get_int("bar") == expected
 
 
 def test_get_int__key_value_is_not_set_no_default_given():
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting an integer value for a key that is set, with no default value
     Then: raise a `ConfigurationError` exception
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
     with pytest.raises(ConfigurationError, match="Configuration key 'foo' is not set"):
-        LeagueRankerConfiguration().get_int("foo")
+        LeagueRankerConfig().get_int("foo")
 
 
 def test_get_int__key_value_is_not_set_default_given():
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting an integer value for a key that is not set, and a default value
     Then: Return the default value
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    assert LeagueRankerConfiguration().get_int("foo", 345) == 345
+    assert LeagueRankerConfig().get_int("foo", 345) == 345
 
 
 def test_get_int__key_value_is_set_to_invalid_type():
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting an integer value for a key that is set to am invalid value
     Then: raise a `ConfigurationError` exception
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    config = LeagueRankerConfiguration.create({"box": "red"})
+    config = LeagueRankerConfig.create({"box": "red"})
 
     with pytest.raises(
         ConfigurationError,
@@ -151,39 +151,39 @@ def test_get_int__key_value_is_set_to_invalid_type():
 )
 def test_get_bool__key_value_is_set(value, expected):
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting a boolean value for a key that is set
     Then: Return the boolean value for that key
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    config = LeagueRankerConfiguration.create({"bag": value})
+    config = LeagueRankerConfig.create({"bag": value})
 
     assert config.get_bool("bag") == expected
 
 
 def test_get_bool__key_value_is_not_set_no_default_given():
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting a boolean value for a key that is not set, with no default value
     Then: raise a `ConfigurationError` exception
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
     with pytest.raises(ConfigurationError, match="Configuration key 'foo' is not set"):
-        LeagueRankerConfiguration().get_bool("foo")
+        LeagueRankerConfig().get_bool("foo")
 
 
 def test_get_bool__key_value_is_not_set_default_given():
     """
-    Given: A `LeagueRankerConfiguration` instance
+    Given: A `LeagueRankerConfig` instance
     When: Requesting a boolean value for a key that is not set, and a default value
     Then: Return the default value
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    assert LeagueRankerConfiguration().get_bool("boo", True) is True
-    assert LeagueRankerConfiguration().get_bool("bot", False) is False
+    assert LeagueRankerConfig().get_bool("boo", True) is True
+    assert LeagueRankerConfig().get_bool("bot", False) is False
 
 
 @mock.patch.dict(
@@ -198,12 +198,12 @@ def test_get_bool__key_value_is_not_set_default_given():
 def test_load_from_env():
     """
     Given: Correctly-prefixed environment variables are set
-    When: Requesting the key from `LeagueRankerConfiguration`
+    When: Requesting the key from `LeagueRankerConfig`
     Then: The expected value is returned
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    config = LeagueRankerConfiguration.create()
+    config = LeagueRankerConfig.create()
 
     assert config.get_bool("strict_parser") is True
     assert config.get_int("points_win", 5)
@@ -216,14 +216,14 @@ def test_load_from_file__file_does_not_exist(mocker):
     When: The given file does not exist
     Then: Raise a `ConfigurationError` exception
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
     mocker.patch("builtins.open", side_effect=FileNotFoundError())
 
     with pytest.raises(
         ConfigurationError, match="Could not read from file '/var/foo.yaml'"
     ):
-        LeagueRankerConfiguration.create({"config_path": "/var/foo.yaml"})
+        LeagueRankerConfig.create({"config_path": "/var/foo.yaml"})
 
 
 def test__find_config_path__file_exists_at_path(mocker):
@@ -234,10 +234,10 @@ def test__find_config_path__file_exists_at_path(mocker):
     """
     mocker.patch("os.path.isfile", return_value=True)
 
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    LeagueRankerConfiguration._config_dirs = ["/foo/bar"]
-    config = LeagueRankerConfiguration.create()
+    LeagueRankerConfig._config_dirs = ["/foo/bar"]
+    config = LeagueRankerConfig.create()
 
     assert config._find_config_path() == "/foo/bar/league-ranker.yaml"
 
@@ -248,15 +248,15 @@ def test__find_config_path__no_file_at_path():
     When: No file can be found
     Then: Raise a `ConfigurationError` exception
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    LeagueRankerConfiguration._config_dirs = ["/foo/bar"]
+    LeagueRankerConfig._config_dirs = ["/foo/bar"]
 
     with pytest.raises(
         ConfigurationError,
         match=re.escape("No configuration file found in ['/foo/bar']"),
     ):
-        LeagueRankerConfiguration.create()
+        LeagueRankerConfig.create()
 
 
 def test__find_config_path__config_path_is_set():
@@ -265,8 +265,8 @@ def test__find_config_path__config_path_is_set():
     When: config_path is set
     Then: return config_path
     """
-    from ranker.config import LeagueRankerConfiguration
+    from ranker.config import LeagueRankerConfig
 
-    config = LeagueRankerConfiguration.create({"config_path": "/foo/bar.yaml"})
+    config = LeagueRankerConfig.create({"config_path": "/foo/bar.yaml"})
 
     assert config._find_config_path() == "/foo/bar.yaml"

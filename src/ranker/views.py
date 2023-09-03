@@ -8,7 +8,7 @@ import typing as t
 import click
 from tabulate import tabulate
 
-from .config import LeagueRankerConfiguration
+from .config import LeagueRankerConfig
 from .stats import LeagueRankerStats
 
 if t.TYPE_CHECKING:
@@ -26,7 +26,7 @@ class CreateLogTableRequestView:
             value = ranking.points.value
             click.echo(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
 
-        if LeagueRankerConfiguration().get_bool("verbose", False):
+        if LeagueRankerConfig().get_bool("verbose", False):
             stats = LeagueRankerStats()
 
             headers = ["Imported", "Processed", "Failed"]

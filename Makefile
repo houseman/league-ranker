@@ -10,7 +10,7 @@ lint: .clean ## Run linters
 	python -m mypy .
 
 tool: .check-venv install ## Install development tools
-	python -m pip install  ".[dev]"
+	python -m pip install  --editable ".[dev]"
 
 help: ## Show this help message
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

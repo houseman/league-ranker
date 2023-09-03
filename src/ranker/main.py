@@ -7,7 +7,7 @@ from io import TextIOWrapper
 
 import click
 
-from .config import LeagueRankerConfiguration
+from .config import LeagueRankerConfig
 from .controllers import LeagueRankController
 from .requests import CreateLogTableRequest
 from .views import CreateLogTableRequestView
@@ -68,7 +68,7 @@ def cli(*args: P.args, **kwargs: P.kwargs) -> None:
     input = t.cast(TextIOWrapper, kwargs.pop("input"))  # This is the input file stream
 
     # If set, let cli args override env, file values
-    config = LeagueRankerConfiguration.create(
+    config = LeagueRankerConfig.create(
         {k: v for k, v in kwargs.items() if v is not None}
     )
 

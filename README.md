@@ -54,7 +54,7 @@ Options:
   -v, --verbose                   Run verbosely (prints statistics at
                                   completion).
   -l, --log-level [DEBUG|INFO|WARNING|ERROR|CRITICAL]
-                                  Sets the logger level
+                                  Sets the logger level.
   --help                          Show this message and exit.
 ```
 
@@ -62,6 +62,7 @@ Options:
 A path to an input data file is required at minimum:
 ```shell
 ❯ rank data/data.in
+
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. Fc Awesome, 1 pt
@@ -72,6 +73,7 @@ A path to an input data file is required at minimum:
 It is possible to read from stdin too (using redirection):
 ```shell
 ❯ cat data/data.in | rank -
+
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. Fc Awesome, 1 pt
@@ -105,6 +107,7 @@ Use the `--verbose` or `-v` option to increase `rank` verbosity.
 Doing so will enable printing of statistics at completion.
 ```shell
 ❯ rank data/data.in --verbose
+
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. Fc Awesome, 1 pt
@@ -125,18 +128,9 @@ The default log level is `ERROR`, i.e. only errors will be logged to output.
 
 This can be adjusted using the `--log-level` or `-l` option:
 ```shell
-❯ rank data/data.in --log-level DEBUG
-2023-09-03 19:39:48,282 - DEBUG - Logging is configured (level: DEBUG)
-2023-09-03 19:39:48,283 - DEBUG - Lions drew Snakes: 3 - 3
-2023-09-03 19:39:48,283 - DEBUG - Tarantulas won Fc Awesome: 1 - 0
-2023-09-03 19:39:48,283 - DEBUG - Lions drew Fc Awesome: 1 - 1
-2023-09-03 19:39:48,283 - DEBUG - Tarantulas won Snakes: 3 - 1
-2023-09-03 19:39:48,283 - DEBUG - Lions won Grouches: 4 - 0
-2023-09-03 19:39:48,283 - DEBUG - Lions: 5
-2023-09-03 19:39:48,283 - DEBUG - Snakes: 1
-2023-09-03 19:39:48,283 - DEBUG - Tarantulas: 6
-2023-09-03 19:39:48,283 - DEBUG - Fc Awesome: 1
-2023-09-03 19:39:48,283 - DEBUG - Grouches: 0
+❯ rank data/data.in --log-level INFO
+2023-09-04 01:09:20,412 - INFO - Read config from file /.../league-ranker.yaml
+
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. Fc Awesome, 1 pt
@@ -149,12 +143,14 @@ Configurations are persisted in a [YAML file](src/league-ranker.yaml).
 The `rank` cli will look for this configuration file at the following locations, in the listed order:
 1. The current working directory (`./league-ranker.yaml`)
 2. A `.ranker` directory within the user's home; `~/.ranker/league-ranker.yaml`
-3. The `src` directory (bundled in the package)
+3. The `league-ranker` package base directory (bundled)
 
 This file location can be set using the `--config`/`-c` option. For example:
 ```shell
 ❯ cp src/league-ranker.yaml /tmp
-❯ rank data/data.in --config /tmp/league-ranker.yaml
+❯ rank data/data.in --config /tmp/league-ranker.yaml -l INFO
+2023-09-04 01:10:24,790 - INFO - Read config from file /tmp/league-ranker.yaml
+
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. Fc Awesome, 1 pt
