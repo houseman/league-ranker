@@ -1,5 +1,4 @@
 """The CLI application entry point."""
-from __future__ import annotations
 
 import logging
 import os
@@ -57,7 +56,7 @@ P = t.ParamSpec("P")
         ],
         case_sensitive=True,
     ),
-    help="Sets the logger level",
+    help="Sets the logger level.",
     default=None,
     show_default=True,
 )

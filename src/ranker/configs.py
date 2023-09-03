@@ -1,10 +1,11 @@
 """
 Configuration container for League Ranker.
 
-Configuration may be set
-- Environment variables (which override)
-- Config file values
-- Or, setting through the `set` method.
+> **Important**
+> There is precedence to these configuration methods. From highest to lowest priority:
+> 1. Command line options (supersede)
+> 2. Environment variables (supersede)
+> 3. Configuration file
 """
 from __future__ import annotations
 

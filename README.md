@@ -41,7 +41,7 @@ There are two ways to acquire the source code:
 ## Usage
 When correctly installed, League Ranker will make the `rank` command available to you.
 
-Run this with the `--help` option to learn more about how to ouse.
+Run this with the `--help` option to learn more about usage.
 
 ```shell
 ❯ rank --help
@@ -86,7 +86,7 @@ It is possible to read from stdin too (using redirection):
 ### Strict Parsing
 The parser will attempt to normalise input data that may be badly-formatted.
 
-> **Info**
+> **Important**
 > The default `rank` behaviour is for *strict parsing* to be **disabled**.
 
 If you wish to *enable* strict parsing, use the `--strict` or `-s` option.
@@ -152,7 +152,7 @@ This can be adjusted using the `--log-level` or `-l` option:
 ### Configuration file
 Configurations are persisted in a [YAML file](src/league-ranker.yaml).
 
-The `rank` cli will look for this configuration file at the following locations in the listed order:
+The `rank` cli will look for this configuration file at the following locations, in the listed order:
 1. The current working directory (`./league-ranker.yaml`)
 2. A `.ranker` directory within the user's home; `~/.ranker/league-ranker.yaml`
 3. The `src` directory (bundled in the package)

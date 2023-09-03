@@ -3,8 +3,6 @@ Parsers understand a defined input data format.
 
 They are able to convert input data to a model structure.
 """
-from __future__ import annotations
-
 import logging
 import re
 import typing as t
@@ -13,10 +11,6 @@ from . import errors as err
 from . import models as m
 from .configs import LeagueRankerConfig
 from .utils import get_stats
-
-if t.TYPE_CHECKING:
-    pass
-
 
 logger = logging.getLogger(__name__)
 
