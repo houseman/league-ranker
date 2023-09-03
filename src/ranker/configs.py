@@ -9,9 +9,12 @@ Configuration may be set
 
 import logging
 import os
+import os.path
 import typing as t
 
 import yaml
+
+from ranker import ROOT_DIR
 
 from .errors import ConfigurationError
 from .meta import SingletonMeta
@@ -28,6 +31,12 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
     """Configuration model for League Ranker."""
 
     _prefix = "CONFIG"
+    _config_filename = "config.yaml"
+    _config_dirs = [
+        os.getcwd(),
+        os.path.expanduser("~/.ranker/"),
+        os.path.abspath(os.path.join(ROOT_DIR, "../")),
+    ]
 
     def __init__(self, *args: P.args, **kwargs: P.kwargs) -> None:
         """Configuration should not be added through this constructor."""
@@ -36,7 +45,7 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
 
         self._data: KeyValuePairs = {}
         self._load_from_env()
-        self._load_from_file("src/league-ranker.yaml")
+        self._load_from_file(self._find_config_path())
         logger.debug(f"Config {self._data} at init")
 
     def set(self, key: str, value: S, mutate: bool = False) -> None:
@@ -47,6 +56,10 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
         This behaviour can be disabled by setting the `mutate` parameter to `True`.
         """
         self._merge({key: value}, mutate=mutate)
+
+    def has_key(self, key: str) -> bool:
+        """Return `True` if the given key has a set value, else `False`."""
+        return key in self._data
 
     def get_str(self, key: str, default: str | None = None) -> str:
         """
@@ -98,8 +111,11 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
         """Load configurations from a YAML file located at the given path."""
         logger.info(f"Read config from file {path}")
 
-        with open(path) as file:
-            self._merge(yaml.safe_load(file).get("config", {}))
+        try:
+            with open(path) as file:
+                self._merge(yaml.safe_load(file).get("config", {}))
+        except FileNotFoundError as e:
+            raise ConfigurationError(f"Could not read from file '{path}'") from e
 
     def _load_from_env(self) -> None:
         """Load values from environment that match `sel._prefix."""
@@ -124,8 +140,21 @@ class BaseConfig(t.Generic[S], metaclass=SingletonMeta):
             else:
                 logger.warning(f"Config key '{k}' exists ('{self._data[k]}')")
 
+    def _find_config_path(self) -> str:
+        """Look for a config file path in pre-defined locations."""
+        if not self.has_key("config_path"):
+            # If this is not set in environment, then look for it in `_config_dirs`
+            for dir in self._config_dirs:
+                path = os.path.join(dir, self._config_filename)
+                logger.debug(f"Looking for config file {path}")
+                if os.path.isfile(path):
+                    self._merge({"config_path": path})
+
+        return self.get_str("config_path")
+
 
 class LeagueRankerConfig(BaseConfig):
     """Configuration container for League Ranker."""
 
     _prefix = "RANKER"
+    _config_filename = "league-ranker.yaml"

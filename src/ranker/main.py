@@ -1,6 +1,5 @@
 """The application entry point."""
 
-from __future__ import annotations
 
 import logging
 import os
@@ -57,7 +56,7 @@ config = get_config()
         case_sensitive=True,
     ),
     help="Sets the logger level",
-    default=None,  # logging.getLevelName(logging.INFO),
+    default=None,
     show_default=True,
 )
 def cli(
@@ -82,6 +81,11 @@ def cli(
             f"{os.linesep}Note: Strict parsing is enabled.{os.linesep}",
             fg="red",
             bold=True,
+        )
+    if config.get_bool("verbose", False):
+        click.secho(
+            f"Use config: {config.get_str('config_path')}{os.linesep}",
+            fg="blue",
         )
 
     if input:
