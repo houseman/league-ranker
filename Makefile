@@ -9,7 +9,9 @@ lint: .clean tool ## Run linters
 	python -m ruff --fix .
 	python -m mypy .
 
-check: tool .clean
+check:
+	python -m pip install ".[dev]"
+	rm -rf build/
 	python -m black --check .
 	python -m ruff .
 	python -m mypy --check .
