@@ -1,5 +1,10 @@
-name: League Ranker Push Checks
-on: [push]
+name: League Ranker Build Checks
+on:
+  push:
+  pull_request:
+    types:
+      - opened
+      - closed
 jobs:
   build:
     runs-on: ubuntu-latest
