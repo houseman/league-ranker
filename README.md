@@ -100,11 +100,7 @@ A note will be printed when strict parsing is enabled.
 
 Note: Strict parsing is enabled.
 
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+1. ...
 ```
 
 ### Verbosity
@@ -114,11 +110,7 @@ Doing so will enable printing of statistics at completion.
 ```shell
 ❯ rank data/data.in --verbose
 
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+1. ...
 
 
 Statistics:
@@ -135,13 +127,7 @@ The default log level is `ERROR`, i.e. only errors will be logged to output.
 This can be adjusted using the `--log-level` or `-l` option:
 ```shell
 ❯ rank data/data.in --log-level INFO
-2023-09-04 01:09:20,412 - INFO - Read config from file /.../league-ranker.yaml
-
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+2023-09-04 11:21:46,257 - INFO - Read config from file ...
 ```
 ### Configuration file
 Configurations are persisted in a [YAML file](src/league-ranker.yaml).
@@ -153,15 +139,10 @@ The `rank` cli will look for this configuration file at the following locations,
 
 This file location can be set using the `--config`/`-c` option. For example:
 ```shell
-❯ cp src/league-ranker.yaml /tmp
+❯ cp src/ranker/league-ranker.yaml /tmp
 ❯ rank data/data.in --config /tmp/league-ranker.yaml -l INFO
-2023-09-04 01:10:24,790 - INFO - Read config from file /tmp/league-ranker.yaml
-
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+2023-09-04 11:22:59,540 - INFO - Read config from file /tmp/league-ranker.yaml
+...
 ```
 ## Configuration
 As mentioned above, configuration is stored in a YAML file, which may be specified.
@@ -172,11 +153,7 @@ It is also possible to set configuration values using environment variables. For
 
 Note: Strict parsing is enabled.
 
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+1. ...
 ```
 
 These environment variable names correspond to those in the YAML configuration file with the name in UPPERCASE, prefixed by `RANKER_`.
@@ -208,16 +185,12 @@ test                 Run tests
 tool                 Install development tools
 ```
 ### Installation
-To install the package as editable, run:
-```
-❯ python -m pip install  --editable .
-```
 To install the required development tools, run:
 ```shell
-❯ python -m pip install  ".[dev]"
+❯ python -m pip install  --editable ".[dev]"
 ```
 > **Note**
-> `make tool` will do both of the above for you.
+> `make tool` will do the above for you.
 
 ### Linting
 The following linting tools are used, and can be run through `make lint`:
