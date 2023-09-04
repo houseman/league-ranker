@@ -208,16 +208,12 @@ test                 Run tests
 tool                 Install development tools
 ```
 ### Installation
-To install the package as editable, run:
-```
-❯ python -m pip install  --editable .
-```
 To install the required development tools, run:
 ```shell
-❯ python -m pip install  ".[dev]"
+❯ python -m pip install  --editable ".[dev]"
 ```
 > **Note**
-> `make tool` will do both of the above for you.
+> `make tool` will do the above for you.
 
 ### Linting
 The following linting tools are used, and can be run through `make lint`:

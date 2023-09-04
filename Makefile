@@ -4,12 +4,17 @@ install: .check-venv .update-pip ## Install project
 test: .check-venv ## Run tests
 	python -m pytest
 
-lint: .clean ## Run linters
+lint: .clean tool ## Run linters
 	python -m black .
 	python -m ruff --fix .
 	python -m mypy .
 
-tool: .check-venv install ## Install development tools
+check: tool .clean
+	python -m black --check .
+	python -m ruff .
+	python -m mypy --check .
+
+tool: .check-venv ## Install development tools
 	python -m pip install  --editable ".[dev]"
 
 help: ## Show this help message
