@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import typing as t
 
 from .factories import LogTableFactory
@@ -10,6 +11,8 @@ from .parsers import LeagueRankerParser
 if t.TYPE_CHECKING:
     from . import models as m
     from .requests import CreateLogTableRequest
+
+logger = logging.getLogger()
 
 
 class LeagueRankController:
@@ -23,7 +26,7 @@ class LeagueRankController:
         """Create and return a League Log Table."""
         parsed_data = self._parse(data=request.data)
         table = self._build(data=parsed_data)
-        response = self._sort(table=table)
+        response = self._rank(table=table)
 
         return response
 
@@ -35,8 +38,20 @@ class LeagueRankController:
         """Invoke the factory build."""
         return self._factory.build(input=data)
 
-    def _sort(self, table: m.RankingTableModel) -> m.RankingTableModel:
-        """Sort rankings by points value descending, team name ascending."""
-        table.rankings.sort(key=lambda r: (-r.points.value, r.team.name))
+    def _rank(self, table: m.RankingTableModel) -> m.RankingTableModel:
+        """Assign rank order amd sort table by this order."""
+        # First, sort the table by aggregate value descending
+        table.rankings.sort(key=lambda r: (-r.aggregate.value, r.team.name))
+
+        current_aggregate = None
+        current_order = 0
+
+        for current_sequence, rank in enumerate(table.rankings, start=1):
+            if rank.aggregate.value != current_aggregate:
+                current_aggregate = rank.aggregate.value
+                current_order += current_sequence - current_order
+
+            logger.debug(f"Set {rank.team.name} to order {current_order}")
+            rank.order.value = current_order
 
         return table

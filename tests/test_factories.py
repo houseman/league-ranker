@@ -60,20 +60,30 @@ def expected():
     """A valid `RankingTableModel` instance."""
     return m.RankingTableModel(
         rankings=[
-            m.RankingModel(
-                team=m.TeamModel(name="Lions"), points=m.RankPointsModel(value=5)
+            m.RankModel(
+                team=m.TeamModel(name="Lions"),
+                aggregate=m.RankAggregateModel(value=5),
+                order=m.RankOrderModel(value=0),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="Snakes"), points=m.RankPointsModel(value=4)
+            m.RankModel(
+                team=m.TeamModel(name="Snakes"),
+                aggregate=m.RankAggregateModel(value=4),
+                order=m.RankOrderModel(value=0),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="Tarantulas"), points=m.RankPointsModel(value=3)
+            m.RankModel(
+                team=m.TeamModel(name="Tarantulas"),
+                aggregate=m.RankAggregateModel(value=3),
+                order=m.RankOrderModel(value=0),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="FC Awesome"), points=m.RankPointsModel(value=1)
+            m.RankModel(
+                team=m.TeamModel(name="FC Awesome"),
+                aggregate=m.RankAggregateModel(value=1),
+                order=m.RankOrderModel(value=0),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="Grouches"), points=m.RankPointsModel(value=0)
+            m.RankModel(
+                team=m.TeamModel(name="Grouches"),
+                aggregate=m.RankAggregateModel(value=0),
+                order=m.RankOrderModel(value=0),
             ),
         ]
     )

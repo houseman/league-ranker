@@ -22,10 +22,13 @@ class CreateLogTableRequestView:
     @staticmethod
     def render(model: m.RankingTableModel) -> None:
         """Render to CLI."""
-        for i, ranking in enumerate(model.rankings, 1):
-            name = ranking.team.name
-            value = ranking.points.value
-            click.echo(f"{i}. {name}, {value} {'pt' if value == 1 else 'pts'}")
+        for rank in model.rankings:
+            order = rank.order.value
+            name = rank.team.name
+            aggregate = rank.aggregate.value
+            click.echo(
+                f"{order}. {name}, {aggregate} {'pt' if aggregate == 1 else 'pts'}"
+            )
 
         if LeagueRankerConfig().get_bool("verbose", False):
             stats = LeagueRankerStats()

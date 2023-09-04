@@ -66,19 +66,15 @@ A path to an input data file is required at minimum:
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+3. Snakes, 1 pt
+4. Grouches, 0 pts
 ```
 
 It is possible to read from stdin too (using redirection):
 ```shell
 ❯ cat data/data.in | rank -
 
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+1. ...
 ```
 
 ### Strict Parsing
@@ -215,3 +211,40 @@ or, simply run
 ❯ pytest
 ```
 Coverage data is generated, and can be found in `htmlcov/index.html`.
+
+## Test data
+The file [`data/rwc_2019.in`](data/rwc_2019.in) contains input data from Rugby World Cup 2019.
+Below are results adjusted to 4 points for a win, 2 points for a draw,
+```shell
+❯ RANKER_POINTS_WIN=4 RANKER_POINTS_DRAW=2 rank data/rwc_2019.in -v
+
+1. Japan, 16 pts
+1. Wales, 16 pts
+2. England, 14 pts
+2. France, 14 pts
+2. New Zealand, 14 pts
+3. Australia, 12 pts
+3. Ireland, 12 pts
+3. South Africa, 12 pts
+4. Italy, 10 pts
+5. Argentina, 8 pts
+5. Scotland, 8 pts
+6. Fiji, 4 pts
+6. Georgia, 4 pts
+6. Samoa, 4 pts
+6. Tonga, 4 pts
+6. Uruguay, 4 pts
+7. Canada, 2 pts
+7. Namibia, 2 pts
+8. Russia, 0 pts
+8. United States, 0 pts
+
+
+Statistics:
+╒════════════╤═════════════╤══════════╕
+│   Imported │   Processed │   Failed │
+╞════════════╪═════════════╪══════════╡
+│         52 │          40 │       12 │
+╘════════════╧═════════════╧══════════╛
+```
+_* Failed records are expected (have a look at the input file to see why)._

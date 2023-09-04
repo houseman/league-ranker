@@ -56,9 +56,9 @@ def config_yaml():
   config_path: /var/foo/bar.yaml
   strict_parse: false
   verbose: false
-  points_win: 3 # A win is worth 3 points
-  points_loss: 0 # A loss is worth 0 points
-  points_draw: 1 # A draw is worth 1 point
+  points_win: 3 # A win is worth 3 aggregate points
+  points_loss: 0 # A loss is worth 0 aggregate points
+  points_draw: 1 # A draw is worth 1 aggregate point
 """
 
 
@@ -67,20 +67,30 @@ def sorted_log_table():
     """A sorted `RankingTableModel` instance."""
     return m.RankingTableModel(
         rankings=[
-            m.RankingModel(
-                team=m.TeamModel(name="Tarantulas"), points=m.RankPointsModel(value=6)
+            m.RankModel(
+                team=m.TeamModel(name="Tarantulas"),
+                aggregate=m.RankAggregateModel(value=6),
+                order=m.RankOrderModel(value=1),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="Lions"), points=m.RankPointsModel(value=5)
+            m.RankModel(
+                team=m.TeamModel(name="Lions"),
+                aggregate=m.RankAggregateModel(value=5),
+                order=m.RankOrderModel(value=2),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="FC Awesome"), points=m.RankPointsModel(value=1)
+            m.RankModel(
+                team=m.TeamModel(name="FC Awesome"),
+                aggregate=m.RankAggregateModel(value=1),
+                order=m.RankOrderModel(value=3),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="Snakes"), points=m.RankPointsModel(value=1)
+            m.RankModel(
+                team=m.TeamModel(name="Snakes"),
+                aggregate=m.RankAggregateModel(value=1),
+                order=m.RankOrderModel(value=3),
             ),
-            m.RankingModel(
-                team=m.TeamModel(name="Grouches"), points=m.RankPointsModel(value=0)
+            m.RankModel(
+                team=m.TeamModel(name="Grouches"),
+                aggregate=m.RankAggregateModel(value=0),
+                order=m.RankOrderModel(value=5),
             ),
         ]
     )
