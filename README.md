@@ -65,7 +65,7 @@ A path to an input data file is required at minimum:
 
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
-3. Fc Awesome, 1 pt
+3. FC Awesome, 1 pt
 4. Snakes, 1 pt
 5. Grouches, 0 pts
 ```
@@ -76,13 +76,19 @@ It is possible to read from stdin too (using redirection):
 
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
-3. Fc Awesome, 1 pt
+3. FC Awesome, 1 pt
 4. Snakes, 1 pt
 5. Grouches, 0 pts
 ```
 
 ### Strict Parsing
 The parser will attempt to normalise input data that may be badly-formatted.
+
+These normalisations are:
+- Strip all characters that are not alphanumeric, space or comma
+- Replace underscores with spaces
+- Reduce consecutive spaces to a single space
+- Strip leading and trailing spaces
 
 > **Important**
 > The default `rank` behaviour is for *strict parsing* to be **disabled**.
@@ -110,7 +116,7 @@ Doing so will enable printing of statistics at completion.
 
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
-3. Fc Awesome, 1 pt
+3. FC Awesome, 1 pt
 4. Snakes, 1 pt
 5. Grouches, 0 pts
 
@@ -133,7 +139,7 @@ This can be adjusted using the `--log-level` or `-l` option:
 
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
-3. Fc Awesome, 1 pt
+3. FC Awesome, 1 pt
 4. Snakes, 1 pt
 5. Grouches, 0 pts
 ```
@@ -153,7 +159,7 @@ This file location can be set using the `--config`/`-c` option. For example:
 
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
-3. Fc Awesome, 1 pt
+3. FC Awesome, 1 pt
 4. Snakes, 1 pt
 5. Grouches, 0 pts
 ```

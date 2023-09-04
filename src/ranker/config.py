@@ -15,6 +15,7 @@ import logging
 import os
 import os.path
 import typing as t
+
 from pathlib import Path
 
 import yaml
@@ -38,14 +39,14 @@ class LeagueRankerConfig(metaclass=SingletonMeta):
     _config_dirs = [  # Search through these for configuration file
         os.getcwd(),  # Current working directory
         os.path.expanduser("~/.ranker/"),  # ${HOME}/.ranker/
-        # Ranker base directory
+        # Package directory
         Path(__file__).absolute().parent.absolute().as_posix(),
     ]
     _truthey = [1, "1", True, "True", "true"]  # Values that should evaluate to `True`
 
     def __init__(self) -> None:
         self._configure_logging()
-        self._load_from_file(self._find_config_path())
+        self._merge_from_file(self._find_config_path())
 
     @classmethod
     def create(cls, init: KeyValuePairs | None = None) -> LeagueRankerConfig:
@@ -111,8 +112,8 @@ class LeagueRankerConfig(metaclass=SingletonMeta):
                 return default
             raise ConfigurationError(f"Configuration key '{key}' is not set") from None
 
-    def _load_from_file(self, path: str) -> None:
-        """Load configurations from a YAML file located at the given path."""
+    def _merge_from_file(self, path: str) -> None:
+        """Merge values from a YAML file located at the given path, into environment."""
         logger.info(f"Read config from file {path}")
 
         try:
@@ -129,7 +130,7 @@ class LeagueRankerConfig(metaclass=SingletonMeta):
         return prefix + key.upper()
 
     def _merge(self, pairs: KeyValuePairs) -> None:
-        """Merge the given config key:value pairs into the internal config store."""
+        """Merge the given config key:value pairs into the environment."""
         for k, v in pairs.items():
             environ_key = self.env_key(k)
             if environ_key not in os.environ:

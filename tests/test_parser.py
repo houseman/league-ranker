@@ -68,8 +68,8 @@ def test_parse__valid_and_invalid():
         ("Foo   Baz  13,   Baa Bar 0", ("Foo Baz", "13", "Baa Bar", "0")),
         ("$Foo 6, &Bar 5", ("Foo", "6", "Bar", "5")),
         ("Foo_Baz   13,   Baa   Bar 0", ("Foo Baz", "13", "Baa Bar", "0")),
-        ("Foo_Baz_bar   1,   Baa _  Bar  _ 10", ("Foo Baz Bar", "1", "Baa Bar", "10")),
-        ("$_foo 6, _&Bar$foo 5", ("Foo", "6", "Bar Foo", "5")),
+        ("Foo_Baz_bar   1,   Baa _  Bar  _ 10", ("Foo Baz bar", "1", "Baa Bar", "10")),
+        ("$_foo 6, _&Bar$foo 5", ("foo", "6", "Bar foo", "5")),
         ("Foo$Baz_Bar%3,(Bar)[20]", ("Foo Baz Bar", "3", "Bar", "20")),
     ],
 )

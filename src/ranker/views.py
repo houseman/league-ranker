@@ -6,6 +6,7 @@ import os
 import typing as t
 
 import click
+
 from tabulate import tabulate
 
 from .config import LeagueRankerConfig
