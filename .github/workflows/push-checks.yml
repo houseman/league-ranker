@@ -1,4 +1,4 @@
-name: League Ranker
+name: League Ranker Push Checks
 on: [push]
 jobs:
   build:
