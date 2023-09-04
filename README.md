@@ -131,7 +131,7 @@ Configurations are persisted in a [YAML file](src/league-ranker.yaml).
 The `rank` cli will look for this configuration file at the following locations, in the listed order:
 1. The current working directory (`./league-ranker.yaml`)
 2. A `.ranker` directory within the user's home directory i.e. `~/.ranker/league-ranker.yaml`
-3. The `league-ranker` package  in the `site-packages`` directory directory (bundled, this will be used by default)
+3. The `league-ranker` package  in the `site-packages` directory (bundled, _this will be used by default_)
 
 This config file location can be over ridden using the `--config`/`-c` option. For example:
 ```shell
@@ -142,6 +142,8 @@ This config file location can be over ridden using the `--config`/`-c` option. F
 ```
 ## Configuration
 As mentioned above, configuration is stored in a YAML file, which may be specified.
+
+Default behaviour may be altered using the command-line options described above.
 
 It is also possible to set configuration values using environment variables. For example:
 ```shell
@@ -164,7 +166,7 @@ These environment variable names correspond to those in the YAML configuration f
 | `config.points_draw` | `RANKER_POINTS_DRAW` | `1` |
 
 > **Important**
-> *There is precedence* to these configuration sources. From highest to lowest priority:
+> ***There is precedence*** to these configuration sources. From highest to lowest priority:
 > 1. Command line options (supersede)
 > 2. Environment variables (supersede)
 > 3. Configuration file
