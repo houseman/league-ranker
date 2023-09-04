@@ -57,7 +57,12 @@ class LogTableFactory:
             logger.info(log_template.format(*format_args))
 
         rankings = [
-            m.RankingModel(team=m.TeamModel(name=k), points=m.RankPointsModel(value=v))
+            m.RankModel(
+                team=m.TeamModel(name=k),
+                aggregate=m.RankAggregateModel(value=v),
+                order=m.RankOrderModel(value=0),  # Not yet sorted in rank order
+            )
             for k, v in table.items()
         ]
+
         return m.RankingTableModel(rankings=rankings)

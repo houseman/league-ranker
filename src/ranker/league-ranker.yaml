@@ -2,6 +2,6 @@ config:
   log_level: ERROR
   strict_parse: false
   verbose: false
-  points_win: 3 # A win is worth 3 points
-  points_loss: 0 # A loss is worth 0 points
-  points_draw: 1 # A draw is worth 1 point
+  points_win: 3 # A win is worth 3 aggregate points
+  points_loss: 0 # A loss is worth 0 aggregate points
+  points_draw: 1 # A draw is worth 1 aggregate point

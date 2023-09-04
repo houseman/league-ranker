@@ -1,4 +1,4 @@
-# league-ranker
+# League Ranker
 A command-line application that will calculate the ranking table for a league
 
 ## Download
@@ -19,12 +19,12 @@ Clone the repository
 > **Important**
 > It is strongly advised that you create and use a Python virtual environment.
 
-> **Note**
-> This package requires Python >= 3.11
+> **Important**
+> This package requires *Python >= 3.11*
 
 1. Create a Python virtual environment
 ```shell
-❯ python -m venv venv
+❯ python3.11 -m venv venv
 ```
 2. Activate the the environment
 ```shell
@@ -66,7 +66,7 @@ A path to an input data file is required at minimum:
 1. Tarantulas, 6 pts
 2. Lions, 5 pts
 3. FC Awesome, 1 pt
-4. Snakes, 1 pt
+3. Snakes, 1 pt
 5. Grouches, 0 pts
 ```
 
@@ -74,11 +74,15 @@ It is possible to read from stdin too (using redirection):
 ```shell
 ❯ cat data/data.in | rank -
 
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-4. Snakes, 1 pt
-5. Grouches, 0 pts
+1. ...
+```
+
+To write output to a file, simply use redirection:
+```shell
+❯ rank data/data.in > /tmp/out.txt
+❯ cat /tmp/out.txt
+
+1. ...
 ```
 
 ### Strict Parsing
@@ -134,10 +138,10 @@ Configurations are persisted in a [YAML file](src/league-ranker.yaml).
 
 The `rank` cli will look for this configuration file at the following locations, in the listed order:
 1. The current working directory (`./league-ranker.yaml`)
-2. A `.ranker` directory within the user's home; `~/.ranker/league-ranker.yaml`
-3. The `league-ranker` package base directory (bundled)
+2. A `.ranker` directory within the user's home directory i.e. `~/.ranker/league-ranker.yaml`
+3. The `league-ranker` package  in the `site-packages` directory (bundled, _this will be used by default_)
 
-This file location can be set using the `--config`/`-c` option. For example:
+This config file location can be over ridden using the `--config`/`-c` option. For example:
 ```shell
 ❯ cp src/ranker/league-ranker.yaml /tmp
 ❯ rank data/data.in --config /tmp/league-ranker.yaml -l INFO
@@ -146,6 +150,8 @@ This file location can be set using the `--config`/`-c` option. For example:
 ```
 ## Configuration
 As mentioned above, configuration is stored in a YAML file, which may be specified.
+
+Default behaviour may be altered using the command-line options described above.
 
 It is also possible to set configuration values using environment variables. For example:
 ```shell
@@ -168,7 +174,7 @@ These environment variable names correspond to those in the YAML configuration f
 | `config.points_draw` | `RANKER_POINTS_DRAW` | `1` |
 
 > **Important**
-> There is precedence to these configuration methods. From highest to lowest priority:
+> ***There is precedence*** to these configuration sources. From highest to lowest priority:
 > 1. Command line options (supersede)
 > 2. Environment variables (supersede)
 > 3. Configuration file
@@ -215,3 +221,40 @@ or, simply run
 ❯ pytest
 ```
 Coverage data is generated, and can be found in `htmlcov/index.html`.
+
+## Test data
+The file [`data/rwc_2019.in`](data/rwc_2019.in) contains input data from Rugby World Cup 2019.
+Below are results,  adjusted to 4 points for a win and 2 points for a draw:
+```shell
+❯ RANKER_POINTS_WIN=4 RANKER_POINTS_DRAW=2 rank data/rwc_2019.in -v
+
+1. Japan, 16 pts
+1. Wales, 16 pts
+3. England, 14 pts
+3. France, 14 pts
+3. New Zealand, 14 pts
+6. Australia, 12 pts
+6. Ireland, 12 pts
+6. South Africa, 12 pts
+9. Italy, 10 pts
+10. Argentina, 8 pts
+10. Scotland, 8 pts
+12. Fiji, 4 pts
+12. Georgia, 4 pts
+12. Samoa, 4 pts
+12. Tonga, 4 pts
+12. Uruguay, 4 pts
+17. Canada, 2 pts
+17. Namibia, 2 pts
+19. Russia, 0 pts
+19. United States, 0 pts
+
+
+Statistics:
+╒════════════╤═════════════╤══════════╕
+│   Imported │   Processed │   Failed │
+╞════════════╪═════════════╪══════════╡
+│         52 │          40 │       12 │
+╘════════════╧═════════════╧══════════╛
+```
+_* Failed records are expected (have a look at the input file to see why)._
