@@ -18,4 +18,4 @@ jobs:
           make check
       - name: Test with pytest
         run: |
-          pytes
+          pytest
