@@ -1,6 +1,7 @@
 """Unit tests for the `ranker.config` module."""
 import os
 import re
+
 from unittest import mock
 
 import pytest
@@ -210,7 +211,7 @@ def test_load_from_env():
     assert config.get_str("success_message", "Done")
 
 
-def test_load_from_file__file_does_not_exist(mocker):
+def test_merge_from_file__file_does_not_exist(mocker):
     """
     Given: Reading a YAML file path
     When: The given file does not exist

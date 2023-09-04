@@ -23,7 +23,7 @@ def config(mocker, config_yaml):
 
     from ranker.config import LeagueRankerConfig
 
-    mocker.patch.object(LeagueRankerConfig, "_load_from_file")
+    mocker.patch.object(LeagueRankerConfig, "_merge_from_file")
 
     LeagueRankerConfig.create(yaml.safe_load(config_yaml).get("config", {}))
 
@@ -74,7 +74,7 @@ def sorted_log_table():
                 team=m.TeamModel(name="Lions"), points=m.RankPointsModel(value=5)
             ),
             m.RankingModel(
-                team=m.TeamModel(name="Fc Awesome"), points=m.RankPointsModel(value=1)
+                team=m.TeamModel(name="FC Awesome"), points=m.RankPointsModel(value=1)
             ),
             m.RankingModel(
                 team=m.TeamModel(name="Snakes"), points=m.RankPointsModel(value=1)

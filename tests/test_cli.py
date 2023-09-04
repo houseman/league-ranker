@@ -1,5 +1,6 @@
 """Unit test for the cli interface."""
 import pytest
+
 from click.testing import CliRunner
 
 

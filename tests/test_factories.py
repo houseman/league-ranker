@@ -24,7 +24,7 @@ def input():
                     team=m.TeamModel(name="Tarantulas"), score=m.ScoreModel(value=1)
                 ),
                 right=m.ResultModel(
-                    team=m.TeamModel(name="Fc Awesome"), score=m.ScoreModel(value=0)
+                    team=m.TeamModel(name="FC Awesome"), score=m.ScoreModel(value=0)
                 ),
             ),
             m.FixtureModel(
@@ -32,7 +32,7 @@ def input():
                     team=m.TeamModel(name="Lions"), score=m.ScoreModel(value=1)
                 ),
                 right=m.ResultModel(
-                    team=m.TeamModel(name="Fc Awesome"), score=m.ScoreModel(value=1)
+                    team=m.TeamModel(name="FC Awesome"), score=m.ScoreModel(value=1)
                 ),
             ),
             m.FixtureModel(
@@ -70,7 +70,7 @@ def expected():
                 team=m.TeamModel(name="Tarantulas"), points=m.RankPointsModel(value=3)
             ),
             m.RankingModel(
-                team=m.TeamModel(name="Fc Awesome"), points=m.RankPointsModel(value=1)
+                team=m.TeamModel(name="FC Awesome"), points=m.RankPointsModel(value=1)
             ),
             m.RankingModel(
                 team=m.TeamModel(name="Grouches"), points=m.RankPointsModel(value=0)

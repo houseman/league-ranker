@@ -21,23 +21,22 @@ class LeagueRankController:
 
     def create_log_table(self, request: CreateLogTableRequest) -> m.RankingTableModel:
         """Create and return a League Log Table."""
-        parsed_data = self.parse(data=request.data)
-        table = self.build(data=parsed_data)
-        response = self.sort(table=table)
+        parsed_data = self._parse(data=request.data)
+        table = self._build(data=parsed_data)
+        response = self._sort(table=table)
 
         return response
 
-    def parse(self, data: str) -> m.FixtureListModel:
+    def _parse(self, data: str) -> m.FixtureListModel:
         """Invoke the parser."""
         return self._parser.parse(data=data)
 
-    def build(self, data: m.FixtureListModel) -> m.RankingTableModel:
+    def _build(self, data: m.FixtureListModel) -> m.RankingTableModel:
         """Invoke the factory build."""
         return self._factory.build(input=data)
 
-    @staticmethod
-    def sort(table: m.RankingTableModel) -> m.RankingTableModel:
-        """Sort and return results."""
-        table.sort()
+    def _sort(self, table: m.RankingTableModel) -> m.RankingTableModel:
+        """Sort rankings by points value descending, team name ascending."""
+        table.rankings.sort(key=lambda r: (-r.points.value, r.team.name))
 
         return table

@@ -77,12 +77,11 @@ class LeagueRankerParser:
             - Strip all characters that are not alphanumeric, space or comma
             - Replace underscores with spaces
             - Reduce consecutive spaces to a single space
-            - Strip leading or ending spaces or newlines
-            - Title-case words
+            - Strip leading and trailing spaces
             """
             record = re.sub(r"[^\w ,]+", " ", record)
             record = re.sub(r"[\s\_]+", " ", record)
-            record = record.strip().title()
+            record = record.strip()
 
         if not record:
             raise err.RecordParseError(f"Unusable record: '{record}' at line {line}")

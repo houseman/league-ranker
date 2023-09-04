@@ -45,7 +45,3 @@ class RankingModel:
 @dataclass
 class RankingTableModel:
     rankings: list[RankingModel]
-
-    def sort(self) -> None:
-        """Sort rankings by points value descending, team name ascending."""
-        self.rankings.sort(key=lambda r: (-r.points.value, r.team.name))
