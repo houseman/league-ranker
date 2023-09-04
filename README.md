@@ -77,6 +77,14 @@ It is possible to read from stdin too (using redirection):
 1. ...
 ```
 
+To write output to a file, simply use redirection:
+```shell
+❯ rank data/data.in > /tmp/out.txt
+❯ cat /tmp/out.txt
+
+1. ...
+```
+
 ### Strict Parsing
 The parser will attempt to normalise input data that may be badly-formatted.
 
