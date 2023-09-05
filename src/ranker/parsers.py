@@ -22,7 +22,7 @@ class LeagueRankerParser:
     This data follows the record format
 
     ```
-    ^(\D*) (\d+),(\D*) (\d+)$
+    <Team name><space><Team score>,<Team name><space><Team score><New line>
     ```
 
     For example:

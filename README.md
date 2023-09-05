@@ -59,6 +59,17 @@ Options:
 ```
 
 ### Input
+#### Expected input format
+The `rank` cli expects a text input data format of:
+```
+<Team name><space><Team score>,<Team name><space><Team score><New line>
+```
+The input should contain one record per line. For example:
+```
+Lions 3, Snakes 3
+
+```
+#### Calculate a ranking table
 A path to an input data file is required at minimum:
 ```shell
 ❯ rank data/data.in
@@ -76,6 +87,8 @@ It is possible to read from stdin too (using redirection):
 
 1. ...
 ```
+### Output
+The calculated table will be printed to stout.
 
 To write output to a file, simply use redirection:
 ```shell
